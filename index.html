@@ -43,7 +43,7 @@
 <div class="grid">
 <div><label for="danaDate">භාරගන්නා දිනය *</label><input id="danaDate" type="date" required></div>
 <div><label for="danaLand">දායකයාගේ ඉඩම් අංකය *</label><input id="danaLand" list="landOptions" required placeholder="ඉඩම් අංකය ඇතුළත් කරන්න"><datalist id="landOptions"></datalist></div>
-<div class="full"><label for="danaName">දායකයාගේ නම</label><input id="danaName" readonly placeholder="ඉඩම් අංකය අනුව නම පෙන්වයි"></div>
+<div class="full"><label for="danaDonorSelect">ගැළපෙන දායකයා තෝරන්න</label><select id="danaDonorSelect"><option value="">පළමුව ඉඩම් අංකය ඇතුළත් කරන්න</option></select><input id="danaName" type="hidden"> <p class="muted" id="danaMatchInfo">එකම ඉඩම් අංකයට නම් කිහිපයක් තිබේ නම් නිවැරදි දායකයා තෝරන්න.</p></div>
 <div class="full"><label for="danaCategory">දාන භාරගැනීමේ අවස්ථාව *</label><select id="danaCategory" required>
 <option value="සාමාන්‍ය දාන භාරගැනීම">සාමාන්‍ය දාන භාරගැනීම</option>
 <option value="පොහොය දින දාන භාරගැනීම">පොහොය දින දාන භාරගැනීම</option>
@@ -144,7 +144,7 @@ function removeDoc(collectionName,id){
 }
 function save(){localStorage.setItem(KEY,JSON.stringify(records));records.forEach(r=>persistDoc('donors',r));render();if(typeof renderDana==='function')renderDana()}
 function resetForm(){$('donorForm').reset();$('editId').value='';$('formTitle').textContent='නව දායක තොරතුරු ඇතුළත් කිරීම'}
-$('donorForm').addEventListener('submit',e=>{e.preventDefault();let item={};fields.forEach(f=>item[f]=$(f).value.trim());let id=$('editId').value;let duplicate=records.find(r=>r.land.toLowerCase()===item.land.toLowerCase()&&r.id!==id);if(duplicate){alert('මෙම ඉඩම් අංකය දැනටමත් ලියාපදිංචි කර ඇත.');return}if(id){records=records.map(r=>r.id===id?{...item,id}:r)}else{item.id=String(Date.now())+'-'+Math.random().toString(36).slice(2,7);records.push(item)}save();resetForm();alert('දායක තොරතුරු සාර්ථකව සුරැකුණි.')});
+$('donorForm').addEventListener('submit',e=>{e.preventDefault();let item={};fields.forEach(f=>item[f]=$(f).value.trim());let id=$('editId').value;if(id){records=records.map(r=>r.id===id?{...item,id}:r)}else{item.id=String(Date.now())+'-'+Math.random().toString(36).slice(2,7);records.push(item)}save();resetForm();alert('දායක තොරතුරු සාර්ථකව සුරැකුණි.')});
 function editRecord(id){let r=records.find(x=>x.id===id);if(!r)return;fields.forEach(f=>$(f).value=r[f]||'');$('editId').value=id;$('formTitle').textContent='දායක තොරතුරු සංස්කරණය';window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})}
 function deleteRecord(id){if(confirm('මෙම දායක වාර්තාව මකා දැමීමට අවශ්‍යද?')){records=records.filter(r=>r.id!==id);removeDoc('donors',id);save()}}
 function card(r){return `<article class="result"><h3>${esc(r.name)} <span class="muted">(${esc(r.land)})</span></h3><div class="details">${[['ඉඩම් අංකය',r.land],['දුරකථනය',r.phone],['පේරුව',r.peruwa],['පවුලේ සාමාජිකයන්',r.family],['ලිපිනය',r.address],['විශේෂ සටහන්',r.notes]].map(([a,b])=>`<div class="detail"><small>${a}</small>${esc(b||'—')}</div>`).join('')}</div><div class="btns"><button class="secondary" onclick="editRecord('${r.id}')">සංස්කරණය</button><button class="danger" onclick="deleteRecord('${r.id}')">මකා දමන්න</button></div></article>`}
@@ -159,13 +159,21 @@ function download(blob,name){let a=document.createElement('a');a.href=URL.create
 const DANA_KEY='sugatha_dana_entries_v1';
 let danaEntries=JSON.parse(localStorage.getItem(DANA_KEY)||'[]');
 function saveDana(){localStorage.setItem(DANA_KEY,JSON.stringify(danaEntries));danaEntries.forEach(r=>persistDoc('donations',r));renderDana()}
-function resetDanaForm(){$('danaForm').reset();$('danaEditId').value='';$('danaName').value='';$('danaCategory').value='සාමාන්‍ය දාන භාරගැනීම';updateDanaChoices()}
-function syncDonorName(){
+function resetDanaForm(){$('danaForm').reset();$('danaEditId').value='';$('danaName').value='';$('danaDonorSelect').innerHTML='<option value="">පළමුව ඉඩම් අංකය ඇතුළත් කරන්න</option>';$('danaMatchInfo').textContent='එකම ඉඩම් අංකයට නම් කිහිපයක් තිබේ නම් නිවැරදි දායකයා තෝරන්න.';$('danaCategory').value='සාමාන්‍ය දාන භාරගැනීම';updateDanaChoices()}
+function syncDonorName(preferredId=''){
  const land=$('danaLand').value.trim().toLowerCase();
- const donor=records.find(r=>String(r.land).trim().toLowerCase()===land);
+ const matches=land?records.filter(r=>String(r.land).trim().toLowerCase()===land):[];
+ const select=$('danaDonorSelect');
+ select.innerHTML='<option value="">දායකයා තෝරන්න</option>'+matches.map(r=>`<option value="${esc(r.id)}">${esc(r.name)} — ${esc(r.land)}${r.peruwa?' — '+esc(r.peruwa):''}</option>`).join('');
+ if(preferredId && matches.some(r=>String(r.id)===String(preferredId))) select.value=String(preferredId);
+ else if(matches.length===1) select.value=String(matches[0].id);
+ else select.value='';
+ const donor=matches.find(r=>String(r.id)===select.value);
  $('danaName').value=donor?donor.name:'';
+ $('danaMatchInfo').textContent=matches.length===0?'මෙම ඉඩම් අංකයට ගැළපෙන දායකයෙකු හමු නොවීය.':matches.length===1?'දායකයා හමු විය.':`මෙම ඉඩම් අංකයට දායකයන් ${matches.length} දෙනෙකු හමු විය. නිවැරදි නම තෝරන්න.`;
 }
-$('danaLand').addEventListener('input',syncDonorName);
+$('danaLand').addEventListener('input',()=>syncDonorName());
+$('danaDonorSelect').addEventListener('change',()=>{const donor=records.find(r=>String(r.id)===$('danaDonorSelect').value);$('danaName').value=donor?donor.name:''});
 const normalDanaTypes=['උදෑසන දානය','දහවල් දානය'];
 const poyaDanaTypes=['සීල දානය','දහවල් දානය','උදෑසන ගිලන්පස','හවස ගිලන්පස'];
 function updateDanaChoices(typeValue='',timeValue=''){
@@ -189,14 +197,14 @@ updateDanaChoices();
 $('danaForm').addEventListener('submit',e=>{
  e.preventDefault();
  const land=$('danaLand').value.trim();
- const donor=records.find(r=>String(r.land).trim().toLowerCase()===land.toLowerCase());
- if(!donor){alert('මෙම ඉඩම් අංකය දායක ලේඛනයේ නොමැත. පළමුව දායකයා ලියාපදිංචි කරන්න.');return}
+ const donor=records.find(r=>String(r.id)===$('danaDonorSelect').value);
+ if(!donor){alert('මෙම ඉඩම් අංකයට අදාළ නිවැරදි දායකයා තෝරන්න.');return}
  const category=$('danaCategory').value;
  const type=$('danaType').value;
  const time=$('danaTime').value;
  if(!type){alert('දාන වර්ගය තෝරන්න.');return}
  if(category==='සාමාන්‍ය දාන භාරගැනීම'&&!time){alert('දානය භාරගන්නා වේලාව තෝරන්න.');return}
- const item={date:$('danaDate').value,land,name:donor.name,category,type,time,notes:$('danaNotes').value.trim()};
+ const item={date:$('danaDate').value,land,name:donor.name,donorId:donor.id,category,type,time,notes:$('danaNotes').value.trim()};
  const id=$('danaEditId').value;
  if(id){danaEntries=danaEntries.map(x=>x.id===id?{...item,id}:x)}
  else{item.id=String(Date.now())+'-'+Math.random().toString(36).slice(2,7);danaEntries.push(item)}
@@ -204,7 +212,7 @@ $('danaForm').addEventListener('submit',e=>{
 });
 function editDana(id){
  const r=danaEntries.find(x=>x.id===id);if(!r)return;
- $('danaDate').value=r.date||'';$('danaLand').value=r.land||'';$('danaName').value=r.name||'';
+ $('danaDate').value=r.date||'';$('danaLand').value=r.land||'';syncDonorName(r.donorId||((records.find(d=>String(d.land).trim().toLowerCase()===String(r.land||'').trim().toLowerCase()&&d.name===r.name)||{}).id||''));$('danaName').value=r.name||'';
  $('danaCategory').value=r.category||'සාමාන්‍ය දාන භාරගැනීම';
  updateDanaChoices(r.type||'',r.time||'');
  $('danaNotes').value=r.notes||'';
