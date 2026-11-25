@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="si">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ශ්‍රී සුගත විවේක සේනාසනය — දායක තොරතුරු</title>
+<style>
+:root{--green:#176b4a;--pale:#eef7f1;--line:#d8e4dc;--ink:#193329}*{box-sizing:border-box}body{margin:0;background:#f4f7f5;color:var(--ink);font-family:system-ui,"Noto Sans Sinhala",sans-serif}.wrap{max-width:850px;margin:auto;padding:16px}.hero{background:linear-gradient(135deg,#14583f,#23845b);color:white;padding:22px 18px;border-radius:18px;margin-bottom:16px}.hero h1{font-size:22px;margin:0 0 6px}.hero p{margin:0;opacity:.9}.card{background:white;border:1px solid var(--line);border-radius:15px;padding:16px;margin:12px 0;box-shadow:0 3px 12px #173b2410}.card h2{font-size:18px;margin:0 0 14px;color:var(--green)}label{display:block;font-size:14px;font-weight:650;margin:10px 0 5px}input,select,textarea{width:100%;padding:12px;border:1px solid #cbd9d0;border-radius:10px;font:inherit;background:white;color:var(--ink)}textarea{min-height:75px;resize:vertical}input[readonly]{background:#f1f5f2}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}.full{grid-column:1/-1}.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}button,.filebtn{border:0;border-radius:10px;padding:11px 15px;font:inherit;font-weight:650;background:var(--green);color:white;cursor:pointer}.secondary{background:#e7f1eb;color:var(--green)}.danger{background:#a83232}.searchrow{display:flex;gap:8px}.searchrow input{flex:1}.result{border:1px solid var(--line);border-radius:12px;padding:13px;margin-top:10px;background:#fbfdfb}.result h3{margin:0 0 8px;color:var(--green)}.details{display:grid;grid-template-columns:1fr 1fr;gap:8px}.detail{background:var(--pale);padding:9px;border-radius:8px;overflow-wrap:anywhere}.detail small{display:block;color:#557164;margin-bottom:3px}.muted{color:#64786e;font-size:13px}.hidden{display:none!important}.count{font-weight:700;color:var(--green)}.empty{padding:16px;text-align:center;color:#66796f}.foot{font-size:12px;color:#687a70;text-align:center;padding:12px}@media(max-width:560px){.grid,.details{grid-template-columns:1fr}.wrap{padding:10px}.hero h1{font-size:19px}}
+</style></head>
+<body>
+<section id="loginPanel" class="wrap" style="max-width:480px;padding-top:7vh">
+  <header class="hero"><h1>ශ්‍රී සුගත විවේක සේනාසනය</h1><p>දායක සභා පද්ධතියට ආරක්ෂිතව පිවිසෙන්න</p></header>
+  <div class="card">
+    <h2>පරිශීලක පිවිසුම</h2>
+    <form id="loginForm">
+      <label for="loginEmail">ඊමේල් ලිපිනය</label>
+      <input id="loginEmail" type="email" autocomplete="username" required placeholder="ඔබගේ ඊමේල් ලිපිනය">
+      <label for="loginPassword">මුරපදය</label>
+      <input id="loginPassword" type="password" autocomplete="current-password" required placeholder="මුරපදය">
+      <div class="btns"><button id="loginButton" type="submit">ලොග් වන්න</button></div>
+      <p id="loginMessage" class="muted" role="status">පරිපාලක විසින් සකස් කළ ගිණුමෙන් පිවිසෙන්න.</p>
+    </form>
+  </div>
+</section>
+<main id="appShell" class="wrap hidden">
+<header class="hero"><h1>ශ්‍රී සුගත විවේක සේනාසනය</h1><p>දායක සභා තොරතුරු කළමනාකරණ පද්ධතිය</p>
+<div class="btns"><span id="cloudStatus" class="muted" style="color:white">Cloud සම්බන්ධතාවය පරීක්ෂා කරමින්...</span><a href="./dana.html" style="display:inline-block;text-decoration:none;border-radius:10px;padding:11px 15px;font-weight:700;background:#fff;color:#176b4a">දාන සහ ගිලන්පස</a><button type="button" class="secondary" onclick="signOutUser()">ලොග් අවුට්</button></div></header>
+<section class="card"><h2>ඉඩම් අංකයෙන් දායකයා සොයන්න</h2><div class="searchrow"><input id="search" placeholder="ඉඩම් අංකය ඇතුළත් කරන්න" autocomplete="off"><button onclick="searchRecord()">සොයන්න</button></div><p class="muted">ඉඩම් අංකයේ කොටසක් ඇතුළත් කළත් ගැළපෙන වාර්තා පෙන්වයි.</p><div id="results"></div></section>
+<section class="card"><h2 id="formTitle">නව දායක තොරතුරු ඇතුළත් කිරීම</h2><form id="donorForm"><input type="hidden" id="editId"><div class="grid">
+<div><label for="land">ඉඩම් අංකය *</label><input id="land" required placeholder="උදා: 125/A"></div>
+<div><label for="name">දායකයාගේ සම්පූර්ණ නම *</label><input id="name" required placeholder="නම සහ වාසගම"></div>
+<div class="full"><label for="address">ලිපිනය</label><textarea id="address" placeholder="සම්පූර්ණ ලිපිනය"></textarea></div>
+<div><label for="phone">දුරකථන අංකය</label><input id="phone" inputmode="tel" placeholder="දුරකථන අංකය"></div>
+<div><label for="peruwa">අයත් පේරුව</label><select id="peruwa"><option value="">තෝරන්න</option><option>පළමු පේරුව</option><option>දෙවන පේරුව</option><option>තෙවන පේරුව</option><option>සිව්වන පේරුව</option><option>වෙනත්</option></select></div>
+<div><label for="family">පවුලේ සාමාජිකයන් ගණන</label><input id="family" type="number" min="0" placeholder="ගණන"></div>
+<div class="full"><label for="notes">විශේෂ සටහන් / දායකත්ව විස්තර</label><textarea id="notes" placeholder="අමතර තොරතුරු"></textarea></div>
+</div><div class="btns"><button type="submit">තොරතුරු සුරකින්න</button><button type="button" class="secondary" onclick="resetForm()">අලුත් වාර්තාවක්</button></div></form></section>
+
+<section class="card">
+<h2>දාන භාරගැනීම් ලේඛනය</h2>
+<p class="muted">දානය භාරගන්නා දිනය, ඉඩම් අංකය සහ දාන වර්ගය සටහන් කරන්න.</p>
+<form id="danaForm">
+<input type="hidden" id="danaEditId">
+<div class="grid">
+<div><label for="danaDate">භාරගන්නා දිනය *</label><input id="danaDate" type="date" required></div>
+<div><label for="danaLand">දායකයාගේ ඉඩම් අංකය *</label><input id="danaLand" list="landOptions" required placeholder="ඉඩම් අංකය ඇතුළත් කරන්න"><datalist id="landOptions"></datalist></div>
+<div class="full"><label for="danaDonorSelect">ගැළපෙන දායකයා තෝරන්න</label><select id="danaDonorSelect"><option value="">පළමුව ඉඩම් අංකය ඇතුළත් කරන්න</option></select><input id="danaName" type="hidden"> <p class="muted" id="danaMatchInfo">එකම ඉඩම් අංකයට නම් කිහිපයක් තිබේ නම් නිවැරදි දායකයා තෝරන්න.</p></div>
+<div class="full"><label for="danaCategory">දාන භාරගැනීමේ අවස්ථාව *</label><select id="danaCategory" required>
+<option value="සාමාන්‍ය දාන භාරගැනීම">සාමාන්‍ය දාන භාරගැනීම</option>
+<option value="පොහොය දින දාන භාරගැනීම">පොහොය දින දාන භාරගැනීම</option>
+</select></div>
+<div><label for="danaType">දාන වර්ගය *</label><select id="danaType" required>
+<option value="">තෝරන්න</option>
+<option>උදෑසන දානය</option>
+<option>දහවල් දානය</option>
+</select></div>
+<div><label for="danaTime">භාරගන්නා වේලාව</label><select id="danaTime"><option value="">තෝරන්න</option><option>උදෑසන</option><option>දහවල්</option></select></div>
+<div class="full"><label for="danaNotes">සටහන්</label><textarea id="danaNotes" placeholder="අවශ්‍ය නම් පමණක් සටහන් කරන්න"></textarea></div>
+</div>
+<div class="btns"><button type="submit">දාන භාරගැනීම සුරකින්න</button><button type="button" class="secondary" onclick="resetDanaForm()">අලුත් සටහනක්</button></div>
+</form>
+</section>
+
+\n<section class="card"><h2>ලියාපදිංචි දායකයන්</h2><div class="count" id="count">වාර්තා 0</div><div id="allRecords"></div><div class="btns"><button class="secondary" onclick="exportCSV()">දායක ලේඛනය CSV ලෙස ලබාගන්න</button><button class="secondary" onclick="backup()">දත්ත Backup කරන්න</button><label class="filebtn secondary">Backup නැවත ඇතුළත් කරන්න<input type="file" accept="application/json" onchange="restore(event)" hidden></label></div></section>
+<p class="foot">දායක තොරතුරු සහ දාන සටහන් ඔබගේ Firebase Cloud ගිණුම සමඟ සමමුහුර්ත වේ. ෆෝන් සහ ලැප්ටොප් දෙකෙන්ම එකම ගිණුමෙන් පිවිසෙන්න.</p>
+</main>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="./firebase-config.js"></script>
+<script>
+const KEY='sugatha_dayaka_records_v1';let records=JSON.parse(localStorage.getItem(KEY)||'[]');
+const $=id=>document.getElementById(id);const fields=['land','name','address','phone','peruwa','family','notes'];
+let auth=null, db=null, currentUser=null, cloudReady=false, donorUnsub=null, danaUnsub=null, syncing=false;
+function setLoginMessage(msg){$('loginMessage').textContent=msg}
+function setCloudStatus(msg){const el=$('cloudStatus');if(el)el.textContent=msg}
+function firebaseConfigured(){
+  return window.SUGATHA_FIREBASE_CONFIG &&
+    window.SUGATHA_FIREBASE_CONFIG.apiKey &&
+    !String(window.SUGATHA_FIREBASE_CONFIG.apiKey).includes('PASTE_');
+}
+function showSignedOut(message='පරිපාලක ගිණුමෙන් පිවිසෙන්න.'){
+  $('loginPanel').classList.remove('hidden');$('appShell').classList.add('hidden');
+  setLoginMessage(message);
+}
+function showSignedIn(){
+  $('loginPanel').classList.add('hidden');$('appShell').classList.remove('hidden');
+}
+function docCollection(name){return db.collection('users').doc(currentUser.uid).collection(name)}
+async function uploadLocalDataOnce(){
+  if(localStorage.getItem('sugatha_cloud_migrated_'+currentUser.uid)==='yes') return;
+  const donorCol=docCollection('donors'), danaCol=docCollection('donations');
+  const [donorSnap,danaSnap]=await Promise.all([donorCol.get(),danaCol.get()]);
+  const batch=db.batch();
+  if(donorSnap.empty) records.forEach(r=>batch.set(donorCol.doc(String(r.id)),r));
+  if(danaSnap.empty) danaEntries.forEach(r=>batch.set(danaCol.doc(String(r.id)),r));
+  if(!donorSnap.empty && records.length) {
+    records.forEach(r=>{if(!donorSnap.docs.some(d=>d.id===String(r.id))) batch.set(donorCol.doc(String(r.id)),r)});
+  }
+  if(!danaSnap.empty && danaEntries.length) {
+    danaEntries.forEach(r=>{if(!danaSnap.docs.some(d=>d.id===String(r.id))) batch.set(danaCol.doc(String(r.id)),r)});
+  }
+  await batch.commit();
+  localStorage.setItem('sugatha_cloud_migrated_'+currentUser.uid,'yes');
+}
+function startCloudSync(){
+  if(donorUnsub)donorUnsub(); if(danaUnsub)danaUnsub();
+  donorUnsub=docCollection('donors').onSnapshot(snap=>{
+    records=snap.docs.map(d=>({...d.data(),id:d.id}));
+    localStorage.setItem(KEY,JSON.stringify(records));render();renderDana();
+    setCloudStatus('Cloud සමඟ සම්බන්ධයි');
+  },err=>setCloudStatus('Cloud දෝෂය: '+err.message));
+  danaUnsub=docCollection('donations').onSnapshot(snap=>{
+    danaEntries=snap.docs.map(d=>({...d.data(),id:d.id}));
+    localStorage.setItem(DANA_KEY,JSON.stringify(danaEntries));renderDana();
+  },err=>setCloudStatus('Cloud දෝෂය: '+err.message));
+}
+async function signOutUser(){try{await auth.signOut()}catch(e){alert('ලොග් අවුට් වීමේ දෝෂයක්: '+e.message)}}
+$('loginForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(!firebaseConfigured()){setLoginMessage('Firebase සැකසුම් තවම ඇතුළත් කර නැත. README_SI.txt හි පියවර අනුගමනය කරන්න.');return}
+  const btn=$('loginButton');btn.disabled=true;setLoginMessage('පිවිසෙමින්...');
+  try{await auth.signInWithEmailAndPassword($('loginEmail').value.trim(),$('loginPassword').value)}
+  catch(err){setLoginMessage('පිවිසීමට නොහැකි විය. ඊමේල් / මුරපදය පරීක්ෂා කරන්න. ('+err.code+')')}
+  finally{btn.disabled=false}
+});
+if(firebaseConfigured()){
+  try{firebase.initializeApp(window.SUGATHA_FIREBASE_CONFIG);auth=firebase.auth();db=firebase.firestore();
+    auth.onAuthStateChanged(async user=>{
+      currentUser=user||null;cloudReady=false;
+      if(!user){if(donorUnsub)donorUnsub();if(danaUnsub)danaUnsub();showSignedOut();return}
+      showSignedIn();setCloudStatus('Cloud දත්ත සකසමින්...');
+      try{await uploadLocalDataOnce();cloudReady=true;startCloudSync()}
+      catch(err){setCloudStatus('Cloud සම්බන්ධතා දෝෂය');alert('Cloud දත්ත සකස් කිරීමේදී දෝෂයක්: '+err.message)}
+    });
+  }catch(err){showSignedOut('Firebase සැකසුම පරීක්ෂා කරන්න: '+err.message)}
+}else{
+  showSignedOut('පළමුව Firebase සැකසුම් ඇතුළත් කළ යුතුය. README_SI.txt බලන්න.');
+}
+function persistDoc(collectionName,item){
+  if(cloudReady && currentUser) docCollection(collectionName).doc(String(item.id)).set(item).catch(e=>alert('Cloud වෙත සුරැකීමට නොහැකි විය: '+e.message));
+}
+function removeDoc(collectionName,id){
+  if(cloudReady && currentUser) docCollection(collectionName).doc(String(id)).delete().catch(e=>alert('Cloud වෙතින් මකා දැමීමට නොහැකි විය: '+e.message));
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(records));records.forEach(r=>persistDoc('donors',r));render();if(typeof renderDana==='function')renderDana()}
+function resetForm(){$('donorForm').reset();$('editId').value='';$('formTitle').textContent='නව දායක තොරතුරු ඇතුළත් කිරීම'}
+$('donorForm').addEventListener('submit',e=>{e.preventDefault();let item={};fields.forEach(f=>item[f]=$(f).value.trim());let id=$('editId').value;if(id){records=records.map(r=>r.id===id?{...item,id}:r)}else{item.id=String(Date.now())+'-'+Math.random().toString(36).slice(2,7);records.push(item)}save();resetForm();alert('දායක තොරතුරු සාර්ථකව සුරැකුණි.')});
+function editRecord(id){let r=records.find(x=>x.id===id);if(!r)return;fields.forEach(f=>$(f).value=r[f]||'');$('editId').value=id;$('formTitle').textContent='දායක තොරතුරු සංස්කරණය';window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})}
+function deleteRecord(id){if(confirm('මෙම දායක වාර්තාව මකා දැමීමට අවශ්‍යද?')){records=records.filter(r=>r.id!==id);removeDoc('donors',id);save()}}
+function card(r){return `<article class="result"><h3>${esc(r.name)} <span class="muted">(${esc(r.land)})</span></h3><div class="details">${[['ඉඩම් අංකය',r.land],['දුරකථනය',r.phone],['පේරුව',r.peruwa],['පවුලේ සාමාජිකයන්',r.family],['ලිපිනය',r.address],['විශේෂ සටහන්',r.notes]].map(([a,b])=>`<div class="detail"><small>${a}</small>${esc(b||'—')}</div>`).join('')}</div><div class="btns"><button class="secondary" onclick="editRecord('${r.id}')">සංස්කරණය</button><button class="danger" onclick="deleteRecord('${r.id}')">මකා දමන්න</button></div></article>`}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function searchRecord(){let q=$('search').value.trim().toLowerCase();let found=q?records.filter(r=>r.land.toLowerCase().includes(q)):[];$('results').innerHTML=!q?'<p class="empty">සෙවීමට ඉඩම් අංකයක් ඇතුළත් කරන්න.</p>':found.length?found.map(card).join(''):'<p class="empty">මෙම ඉඩම් අංකයට අදාළ වාර්තාවක් හමු නොවීය.</p>'}
+$('search').addEventListener('keydown',e=>{if(e.key==='Enter')searchRecord()});
+function render(){$('count').textContent='වාර්තා '+records.length;$('allRecords').innerHTML=records.length?[...records].sort((a,b)=>a.land.localeCompare(b.land,undefined,{numeric:true})).map(card).join(''):'<p class="empty">තවම දායක තොරතුරු ඇතුළත් කර නැත.</p>';if($('search').value.trim())searchRecord()}
+function exportCSV(){if(!records.length){alert('Export කිරීමට වාර්තා නැත.');return}let cols=['land','name','address','phone','peruwa','family','notes'];let labels=['ඉඩම් අංකය','දායකයාගේ නම','ලිපිනය','දුරකථන අංකය','පේරුව','පවුලේ සාමාජිකයන්','විශේෂ සටහන්'];let csv='\uFEFF'+[labels,...records.map(r=>cols.map(k=>r[k]||''))].map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');download(new Blob([csv],{type:'text/csv;charset=utf-8'}),'dayaka_register.csv')}
+function backup(){download(new Blob([JSON.stringify(records,null,2)],{type:'application/json'}),'dayaka_backup.json')}
+function restore(e){let file=e.target.files[0];if(!file)return;let reader=new FileReader();reader.onload=()=>{try{let data=JSON.parse(reader.result);if(!Array.isArray(data)||!data.every(r=>r.land&&r.name))throw Error();if(confirm('Backup දත්ත දැනට ඇති වාර්තාවලට එකතු කරන්නද?')){data.forEach(r=>{if(!records.some(x=>x.land.toLowerCase()===String(r.land).toLowerCase()))records.push({...r,id:r.id||String(Date.now())+Math.random()})});save();alert('Backup දත්ත ඇතුළත් කරන ලදී.')}}catch(err){alert('මෙම Backup ගොනුව නිවැරදි නොවේ.')}e.target.value=''};reader.readAsText(file)}
+function download(blob,name){let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href)}
+const DANA_KEY='sugatha_dana_entries_v1';
+let danaEntries=JSON.parse(localStorage.getItem(DANA_KEY)||'[]');
+function saveDana(){localStorage.setItem(DANA_KEY,JSON.stringify(danaEntries));danaEntries.forEach(r=>persistDoc('donations',r));renderDana()}
+function resetDanaForm(){$('danaForm').reset();$('danaEditId').value='';$('danaName').value='';$('danaDonorSelect').innerHTML='<option value="">පළමුව ඉඩම් අංකය ඇතුළත් කරන්න</option>';$('danaMatchInfo').textContent='එකම ඉඩම් අංකයට නම් කිහිපයක් තිබේ නම් නිවැරදි දායකයා තෝරන්න.';$('danaCategory').value='සාමාන්‍ය දාන භාරගැනීම';updateDanaChoices()}
+function syncDonorName(preferredId=''){
+ const land=$('danaLand').value.trim().toLowerCase();
+ const matches=land?records.filter(r=>String(r.land).trim().toLowerCase()===land):[];
+ const select=$('danaDonorSelect');
+ select.innerHTML='<option value="">දායකයා තෝරන්න</option>'+matches.map(r=>`<option value="${esc(r.id)}">${esc(r.name)} — ${esc(r.land)}${r.peruwa?' — '+esc(r.peruwa):''}</option>`).join('');
+ if(preferredId && matches.some(r=>String(r.id)===String(preferredId))) select.value=String(preferredId);
+ else if(matches.length===1) select.value=String(matches[0].id);
+ else select.value='';
+ const donor=matches.find(r=>String(r.id)===select.value);
+ $('danaName').value=donor?donor.name:'';
+ $('danaMatchInfo').textContent=matches.length===0?'මෙම ඉඩම් අංකයට ගැළපෙන දායකයෙකු හමු නොවීය.':matches.length===1?'දායකයා හමු විය.':`මෙම ඉඩම් අංකයට දායකයන් ${matches.length} දෙනෙකු හමු විය. නිවැරදි නම තෝරන්න.`;
+}
+$('danaLand').addEventListener('input',()=>syncDonorName());
+$('danaDonorSelect').addEventListener('change',()=>{const donor=records.find(r=>String(r.id)===$('danaDonorSelect').value);$('danaName').value=donor?donor.name:''});
+const normalDanaTypes=['උදෑසන දානය','දහවල් දානය'];
+const poyaDanaTypes=['සීල දානය','දහවල් දානය','උදෑසන ගිලන්පස','හවස ගිලන්පස'];
+function updateDanaChoices(typeValue='',timeValue=''){
+ const isPoya=$('danaCategory').value==='පොහොය දින දාන භාරගැනීම';
+ const types=isPoya?poyaDanaTypes:normalDanaTypes;
+ $('danaType').innerHTML='<option value="">තෝරන්න</option>'+types.map(x=>`<option>${x}</option>`).join('');
+ $('danaType').value=types.includes(typeValue)?typeValue:'';
+ if(isPoya){
+   $('danaTime').innerHTML='<option value="">අදාළ නොවේ</option>';
+   const mapped=typeValue==='සීල දානය'?'උදෑසන':typeValue==='දහවල් දානය'?'දහවල්':typeValue==='උදෑසන ගිලන්පස'?'උදෑසන':typeValue==='හවස ගිලන්පස'?'හවස':'';
+   $('danaTime').value=mapped;
+   $('danaTime').disabled=true;
+ }else{
+   $('danaTime').disabled=false;
+   $('danaTime').innerHTML='<option value="">තෝරන්න</option><option>උදෑසන</option><option>දහවල්</option>';
+   $('danaTime').value=timeValue;
+ }
+}
+$('danaCategory').addEventListener('change',()=>updateDanaChoices());
+updateDanaChoices();
+$('danaForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const land=$('danaLand').value.trim();
+ const donor=records.find(r=>String(r.id)===$('danaDonorSelect').value);
+ if(!donor){alert('මෙම ඉඩම් අංකයට අදාළ නිවැරදි දායකයා තෝරන්න.');return}
+ const category=$('danaCategory').value;
+ const type=$('danaType').value;
+ const time=$('danaTime').value;
+ if(!type){alert('දාන වර්ගය තෝරන්න.');return}
+ if(category==='සාමාන්‍ය දාන භාරගැනීම'&&!time){alert('දානය භාරගන්නා වේලාව තෝරන්න.');return}
+ const item={date:$('danaDate').value,land,name:donor.name,donorId:donor.id,category,type,time,notes:$('danaNotes').value.trim()};
+ const id=$('danaEditId').value;
+ if(id){danaEntries=danaEntries.map(x=>x.id===id?{...item,id}:x)}
+ else{item.id=String(Date.now())+'-'+Math.random().toString(36).slice(2,7);danaEntries.push(item)}
+ saveDana();resetDanaForm();alert('දාන භාරගැනීමේ සටහන සුරැකුණි.');
+});
+function editDana(id){
+ const r=danaEntries.find(x=>x.id===id);if(!r)return;
+ $('danaDate').value=r.date||'';$('danaLand').value=r.land||'';syncDonorName(r.donorId||((records.find(d=>String(d.land).trim().toLowerCase()===String(r.land||'').trim().toLowerCase()&&d.name===r.name)||{}).id||''));$('danaName').value=r.name||'';
+ $('danaCategory').value=r.category||'සාමාන්‍ය දාන භාරගැනීම';
+ updateDanaChoices(r.type||'',r.time||'');
+ $('danaNotes').value=r.notes||'';
+ $('danaEditId').value=id;window.scrollTo({top:0,behavior:'smooth'});
+}
+function deleteDana(id){if(confirm('මෙම දාන සටහන මකා දැමීමට අවශ්‍යද?')){danaEntries=danaEntries.filter(x=>x.id!==id);removeDoc('donations',id);saveDana()}}
+function danaCard(r){return `<article class="result"><h3>${esc(r.date)} — ${esc(r.type)}</h3><div class="details">${[['අවස්ථාව',r.category||'සාමාන්‍ය දාන භාරගැනීම'],['ඉඩම් අංකය',r.land],['දායකයා',r.name],['භාරගන්නා වේලාව',r.time],['සටහන්',r.notes]].map(([a,b])=>`<div class="detail"><small>${a}</small>${esc(b||'—')}</div>`).join('')}</div><div class="btns"><button class="secondary" onclick="editDana('${r.id}')">සංස්කරණය</button><button class="danger" onclick="deleteDana('${r.id}')">මකා දමන්න</button></div></article>`}
+function renderDana(){
+ const dl=$('landOptions');if(dl)dl.innerHTML=records.map(r=>`<option value="${esc(r.land)}">${esc(r.name)}</option>`).join('');
+}
+function exportDanaCSV(){
+ if(!danaEntries.length){alert('Export කිරීමට දාන සටහන් නැත.');return}
+ const labels=['දිනය','අවස්ථාව','ඉඩම් අංකය','දායකයාගේ නම','දාන වර්ගය','භාරගන්නා වේලාව','සටහන්'];
+ const cols=['date','category','land','name','type','time','notes'];
+ const csv='\\uFEFF'+[labels,...danaEntries.map(r=>cols.map(k=>r[k]||''))].map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\\r\\n');
+ download(new Blob([csv],{type:'text/csv;charset=utf-8'}),'dana_register.csv');
+}
+function backupDana(){download(new Blob([JSON.stringify(danaEntries,null,2)],{type:'application/json'}),'dana_backup.json')}
+
+render();renderDana();
+</script></body></html>

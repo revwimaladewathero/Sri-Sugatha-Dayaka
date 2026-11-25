@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="si">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>දාන සහ ගිලන්පස — ශ්‍රී සුගත විවේක සේනාසනය</title>
+<style>
+:root{--green:#176b4a;--pale:#eef7f1;--line:#d8e4dc;--ink:#193329}
+*{box-sizing:border-box}body{margin:0;background:#f4f7f5;color:var(--ink);font-family:system-ui,"Noto Sans Sinhala",sans-serif}
+.wrap{max-width:900px;margin:auto;padding:14px}.hero{background:linear-gradient(135deg,#14583f,#23845b);color:white;padding:20px 18px;border-radius:16px;margin-bottom:14px}
+.hero h1{font-size:21px;margin:0 0 6px}.hero p{margin:0}.card{background:white;border:1px solid var(--line);border-radius:14px;padding:15px;margin:12px 0}
+h2{font-size:18px;color:var(--green);margin:0 0 12px}label{display:block;font-weight:650;font-size:14px;margin:9px 0 5px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #cbd9d0;border-radius:9px;font:inherit;background:white;color:var(--ink)}
+textarea{min-height:65px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}.full{grid-column:1/-1}
+button,.linkbtn{border:0;border-radius:9px;padding:11px 14px;font:inherit;font-weight:650;background:var(--green);color:white;text-decoration:none;display:inline-block;cursor:pointer}
+.secondary{background:#e7f1eb;color:var(--green)}.danger{background:#a83232}.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.muted{font-size:13px;color:#66796f}.hidden{display:none!important}.result{border:1px solid var(--line);border-radius:10px;padding:12px;margin:9px 0;background:#fbfdfb}
+.details{display:grid;grid-template-columns:1fr 1fr;gap:7px}.detail{background:var(--pale);padding:8px;border-radius:8px;overflow-wrap:anywhere}.detail small{display:block;color:#557164}
+.empty{text-align:center;padding:14px;color:#66796f}.status{padding:10px;background:#eef7f1;border-radius:9px;margin:8px 0}
+@media(max-width:560px){.grid,.details{grid-template-columns:1fr}.wrap{padding:9px}}
+</style></head>
+<body>
+<main class="wrap">
+<header class="hero">
+<h1>ශ්‍රී සුගත විවේක සේනාසනය</h1><p>දාන සහ ගිලන්පස භාරගැනීම් ලේඛනය</p>
+<div class="btns"><a class="linkbtn secondary" href="./index.html">දායක තොරතුරු වෙත</a><button type="button" class="secondary" id="logoutBtn">ලොග් අවුට්</button></div>
+</header>
+<section id="loading" class="card"><p>පද්ධතියට සම්බන්ධ වෙමින්...</p></section>
+<section id="main" class="hidden">
+<div class="card">
+<h2>නව භාරගැනීමක් සටහන් කරන්න</h2>
+<form id="entryForm">
+<input type="hidden" id="editId">
+<div class="grid">
+<div><label for="entryDate">දිනය *</label><input id="entryDate" type="date" required></div>
+<div><label for="dayKind">දිනයේ වර්ගය *</label><select id="dayKind" required><option value="සාමාන්‍ය දිනය">සාමාන්‍ය දිනය</option><option value="පොහොය දිනය">පොහොය දිනය</option></select></div>
+<div><label for="land">දායකයාගේ ඉඩම් අංකය *</label><input id="land" list="landOptions" required placeholder="ඉඩම් අංකය"><datalist id="landOptions"></datalist></div>
+<div><label for="donorName">දායකයාගේ නම</label><input id="donorName" readonly placeholder="ඉඩම් අංකය ඇතුළත් කළ පසු පෙන්වයි"></div>
+<div class="full"><label for="entryType">දානය / ගිලන්පස වර්ගය *</label><select id="entryType" required></select><p class="muted" id="donorHint">දායක ලේඛනයේ ඇති ඉඩම් අංකය ඇතුළත් කරන්න.</p></div>
+<div class="full"><label for="receivedBy">භාරගන්නා පින්වතා / භාරගන්නා පුද්ගලයා</label><input id="receivedBy" placeholder="නම ඇතුළත් කරන්න"></div>
+<div class="full"><label for="notes">සටහන්</label><textarea id="notes" placeholder="අවශ්‍ය නම් සටහන් කරන්න"></textarea></div>
+</div>
+<div class="btns"><button type="submit">සටහන සුරකින්න</button><button type="button" class="secondary" id="resetBtn">අලුත් සටහනක්</button></div>
+</form>
+</div>
+<div class="card">
+<h2>පැරණි සටහන් සොයන්න</h2>
+<div class="grid">
+<div><label for="filterLand">ඉඩම් අංකය</label><input id="filterLand" placeholder="ඉඩම් අංකය"></div>
+<div><label for="filterDate">දිනය</label><input id="filterDate" type="date"></div>
+</div>
+<div class="btns"><button type="button" id="filterBtn">සොයන්න</button><button type="button" class="secondary" id="clearFilter">සියල්ල පෙන්වන්න</button></div>
+<div id="history"><p class="empty">සටහන් පූරණය වෙමින්...</p></div>
+</div>
+<p class="muted">මෙම පිටුවේ සටහන් ඔබගේ Firebase Cloud ගිණුමේ donations ලේඛනයටම සුරැකේ. දායක ලේඛනයේ තොරතුරු වෙනස් නොවේ.</p>
+</section>
+</main>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="./firebase-config.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const DONOR_KEY='sugatha_dayaka_records_v1', DANA_KEY='sugatha_dana_entries_v1';
+let auth,db,user,donors=[],entries=[],stopDonors=null,stopEntries=null;
+const normalTypes=['උදෑසන දානය','දහවල් දානය'];
+const poyaTypes=['උදෑසන දානය','දහවල් දානය','උදෑසන ගිලන්පස','සවස ගිලන්පස'];
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function collection(name){return db.collection('users').doc(user.uid).collection(name)}
+function showMessage(msg){$('loading').innerHTML='<p>'+esc(msg)+'</p>'}
+function updateTypes(keep=''){
+ const opts=$('dayKind').value==='පොහොය දිනය'?poyaTypes:normalTypes;
+ $('entryType').innerHTML='<option value="">තෝරන්න</option>'+opts.map(x=>'<option>'+esc(x)+'</option>').join('');
+ if(opts.includes(keep))$('entryType').value=keep;
+}
+function findDonor(){
+ const q=$('land').value.trim().toLowerCase();
+ const matches=donors.filter(d=>String(d.land||'').trim().toLowerCase()===q);
+ $('donorName').value=matches.length===1?(matches[0].name||''):'';
+ $('donorHint').textContent=!q?'දායක ලේඛනයේ ඇති ඉඩම් අංකය ඇතුළත් කරන්න.':matches.length===1?'දායකයා හඳුනාගත්තා.':matches.length===0?'මෙම ඉඩම් අංකය දායක ලේඛනයේ හමු නොවීය.':'මෙම ඉඩම් අංකයට වාර්තා කිහිපයක් තිබේ. පරිපාලකගෙන් පරීක්ෂා කරගන්න.';
+ return matches.length===1?matches[0]:null;
+}
+function refreshLandOptions(){
+ $('landOptions').innerHTML=donors.map(d=>'<option value="'+esc(d.land)+'">'+esc(d.name)+'</option>').join('');
+}
+function resetForm(){
+ $('entryForm').reset();$('editId').value='';$('entryDate').value=new Date().toISOString().slice(0,10);
+ $('dayKind').value='සාමාන්‍ය දිනය';$('donorName').value='';$('donorHint').textContent='දායක ලේඛනයේ ඇති ඉඩම් අංකය ඇතුළත් කරන්න.';
+ updateTypes();
+}
+function saveLocal(){localStorage.setItem(DANA_KEY,JSON.stringify(entries))}
+function renderHistory(){
+ const q=$('filterLand').value.trim().toLowerCase(), date=$('filterDate').value;
+ const found=entries.filter(r=>(!q||String(r.land||'').toLowerCase().includes(q))&&(!date||r.date===date)).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+ $('history').innerHTML=found.length?found.map(r=>`<article class="result"><h3>${esc(r.date)} — ${esc(r.type)}</h3><div class="details">${[['දිනයේ වර්ගය',r.dayKind||r.category],['ඉඩම් අංකය',r.land],['දායකයා',r.name],['භාරගත් පින්වතා',r.receivedBy],['සටහන්',r.notes]].map(([a,b])=>`<div class="detail"><small>${a}</small>${esc(b||'—')}</div>`).join('')}</div><div class="btns"><button class="secondary" onclick="editEntry('${esc(r.id)}')">සංස්කරණය</button><button class="danger" onclick="deleteEntry('${esc(r.id)}')">මකා දමන්න</button></div></article>`).join(''):'<p class="empty">ගැළපෙන සටහන් නැත.</p>';
+}
+function subscribe(){
+ if(stopDonors)stopDonors();if(stopEntries)stopEntries();
+ stopDonors=collection('donors').onSnapshot(s=>{donors=s.docs.map(d=>({...d.data(),id:d.id}));refreshLandOptions()},e=>showMessage('දායක දත්ත ලබාගැනීමේ දෝෂයක්: '+e.message));
+ stopEntries=collection('donations').onSnapshot(s=>{entries=s.docs.map(d=>({...d.data(),id:d.id}));saveLocal();renderHistory()},e=>showMessage('දාන දත්ත ලබාගැනීමේ දෝෂයක්: '+e.message));
+}
+$('dayKind').addEventListener('change',()=>updateTypes());
+$('land').addEventListener('input',findDonor);
+$('entryForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const donor=findDonor();if(!donor){alert('දායක ලේඛනයේ ඇති නිවැරදි ඉඩම් අංකයක් ඇතුළත් කරන්න.');return}
+ const type=$('entryType').value;if(!type){alert('දානය හෝ ගිලන්පස වර්ගය තෝරන්න.');return}
+ const id=$('editId').value||String(Date.now())+'-'+Math.random().toString(36).slice(2,8);
+ const item={id,date:$('entryDate').value,dayKind:$('dayKind').value,category:$('dayKind').value,land:donor.land,name:donor.name,donorId:donor.id,type,receivedBy:$('receivedBy').value.trim(),notes:$('notes').value.trim()};
+ try{await collection('donations').doc(id).set(item);alert('සටහන Cloud වෙත සාර්ථකව සුරැකුණි.');resetForm()}catch(err){alert('සුරැකීමට නොහැකි විය: '+err.message)}
+});
+window.editEntry=id=>{
+ const r=entries.find(x=>String(x.id)===String(id));if(!r)return;
+ $('editId').value=r.id;$('entryDate').value=r.date||'';$('dayKind').value=r.dayKind||r.category||'සාමාන්‍ය දිනය';
+ updateTypes(r.type||'');$('land').value=r.land||'';findDonor();$('receivedBy').value=r.receivedBy||'';$('notes').value=r.notes||'';
+ window.scrollTo({top:0,behavior:'smooth'});
+};
+window.deleteEntry=async id=>{if(!confirm('මෙම සටහන මකා දැමීමට අවශ්‍යද?'))return;try{await collection('donations').doc(String(id)).delete()}catch(err){alert('මකා දැමීමට නොහැකි විය: '+err.message)}};
+$('resetBtn').addEventListener('click',resetForm);
+$('filterBtn').addEventListener('click',renderHistory);
+$('clearFilter').addEventListener('click',()=>{$('filterLand').value='';$('filterDate').value='';renderHistory()});
+$('logoutBtn').addEventListener('click',()=>auth.signOut());
+if(!window.SUGATHA_FIREBASE_CONFIG||!window.SUGATHA_FIREBASE_CONFIG.apiKey){showMessage('Firebase සැකසුම් ගොනුව හමු නොවීය. firebase-config.js ගොනුව index.html සමඟ එකම ෆෝල්ඩරයේ තිබිය යුතුය.')}
+else{
+ try{
+  firebase.initializeApp(window.SUGATHA_FIREBASE_CONFIG);auth=firebase.auth();db=firebase.firestore();
+  auth.onAuthStateChanged(u=>{
+   if(!u){location.href='./index.html';return}
+   user=u;$('loading').classList.add('hidden');$('main').classList.remove('hidden');resetForm();subscribe();
+  });
+ }catch(err){showMessage('Firebase සම්බන්ධතාවයේ දෝෂයක්: '+err.message)}
+}
+</script></body></html>
