@@ -1,4 +1,4 @@
-<!doctype html>
+4<!doctype html>
 <html lang="si">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
@@ -68,6 +68,57 @@ input, select, textarea {
 <main id="appShell" class="wrap hidden">
 <header class="hero"><h1>ශ්‍රී සුගත විවේක සේනාසනය</h1><p>දායක සභා තොරතුරු කළමනාකරණ පද්ධතිය</p>
 <div class="btns"><span id="cloudStatus" class="muted" style="color:white">Cloud සම්බන්ධතාවය පරීක්ෂා කරමින්...</span><button type="button" class="secondary" onclick="signOutUser()">ලොග් අවුට්</button></div></header>
+<section class="card">
+  <h2>🌸 ප්‍රධාන මෙනුව</h2>
+  <div class="grid">
+    <button type="button" onclick="document.getElementById('donorForm').scrollIntoView({behavior:'smooth'})">🟢 දායක තොරතුරු</button>
+    <button type="button" onclick="document.getElementById('danaForm').scrollIntoView({behavior:'smooth'})">🔵 උදෑසන / දවල් දානය</button>
+    <button type="button" onclick="document.getElementById('danaForm').scrollIntoView({behavior:'smooth'})">🟠 දාන ලේඛනය</button>
+    <button type="button" onclick="document.getElementById('poyaSection').scrollIntoView({behavior:'smooth'})">🟣 පොහොය දින</button>
+    <button type="button" onclick="document.getElementById('poyaSection').scrollIntoView({behavior:'smooth'})">🟦 උදෑසන ගිලන්පස</button>
+    <button type="button" onclick="document.getElementById('poyaSection').scrollIntoView({behavior:'smooth'})">🟪 සවස ගිලන්පස</button>
+  </div>
+</section>
+
+<section class="card" id="poyaSection">
+  <h2>🌕 පොහොය දින දායකත්ව ලේඛනය</h2>
+
+  <label>පොහොය දිනය</label>
+  <input type="date" id="poyaDate">
+
+  <label>දායකත්ව වර්ගය</label>
+  <select id="poyaCategory">
+    <option value="">දායකත්වය තෝරන්න</option>
+    <option>උදෑසන දානය</option>
+    <option>දහවල් දානය</option>
+    <option>උදෑසන ගිලන්පස</option>
+    <option>සවස ගිලන්පස</option>
+    <option>ධර්ම දේශනා දායකත්වය</option>
+  </select>
+
+  <h3>දායකයා සොයන්න</h3>
+  <label>ඉඩම් අංකය</label>
+  <input id="poyaLandSearch" placeholder="ඉඩම් අංකය ඇතුළත් කරන්න">
+  <button type="button" onclick="searchPoyaDonor()">දායකයා සොයන්න</button>
+  <div id="poyaDonorResult"></div>
+
+  <h3>ඉඩම් අංකයක් නොමැති දායකයා</h3>
+  <label>නම</label>
+  <input id="poyaNoLandName" placeholder="දායකයාගේ නම">
+  <label>දුරකථන අංකය</label>
+  <input id="poyaNoLandPhone" placeholder="දුරකථන අංකය">
+  <label>ලිපිනය</label>
+  <textarea id="poyaNoLandAddress" placeholder="ලිපිනය"></textarea>
+
+  <label>සටහන්</label>
+  <textarea id="poyaNotes" placeholder="අමතර සටහන්"></textarea>
+
+  <button type="button" onclick="savePoyaRecord()">සටහන සුරකින්න</button>
+  <button type="button" onclick="loadPoyaRecords()">තෝරාගත් දිනයේ ලේඛනය බලන්න</button>
+
+  <div id="poyaRecords"></div>
+</section>
+
 <section class="card"><h2>ඉඩම් අංකයෙන් දායකයා සොයන්න</h2><div class="searchrow"><input id="search" placeholder="ඉඩම් අංකය ඇතුළත් කරන්න" autocomplete="off"><button onclick="searchRecord()">සොයන්න</button></div><p class="muted">ඉඩම් අංකයේ කොටසක් ඇතුළත් කළත් ගැළපෙන වාර්තා පෙන්වයි.</p><div id="results"></div></section>
 <section class="card"><h2 id="formTitle">නව දායක තොරතුරු ඇතුළත් කිරීම</h2><form id="donorForm"><input type="hidden" id="editId"><div class="grid">
 <div><label for="land">ඉඩම් අංකය *</label><input id="land" required placeholder="උදා: 125/A"></div>
@@ -102,6 +153,57 @@ input, select, textarea {
 </div>
 <div class="btns"><button type="submit">දාන භාරගැනීම සුරකින්න</button><button type="button" class="secondary" onclick="resetDanaForm()">අලුත් සටහනක්</button></div>
 </form>
+</section>
+
+<section class="card" id="poyaSection">
+  <h2>🌕 පොහොය දින විශේෂ දායකත්වය</h2>
+  <p class="muted">පොහොය දිනය අනුව දායකත්වයන් කළමනාකරණය කරන්න.</p>
+
+  <div class="grid">
+    <div class="full">
+      <label>📅 පොහොය දිනය *</label>
+      <input type="date" id="poyaDate" required>
+      <button type="button" onclick="loadPoyaRecords()">එම දිනයේ දායකයන් බලන්න</button>
+    </div>
+
+    <div class="full">
+      <h3>🔎 ඉඩම් අංකයෙන් දායකයා සොයන්න</h3>
+      <input id="poyaLandSearch" placeholder="ඉඩම් අංකය ඇතුළත් කරන්න">
+      <button type="button" onclick="searchPoyaDonor()">සොයන්න</button>
+      <div id="poyaDonorResult"></div>
+    </div>
+
+    <div class="full">
+      <h3>👤 ඉඩම් අංක නොමැති දායකයන්</h3>
+      <input id="poyaNoLandName" placeholder="දායකයාගේ නම">
+      <input id="poyaNoLandPhone" placeholder="දුරකථන අංකය">
+      <textarea id="poyaNoLandAddress" placeholder="ලිපිනය"></textarea>
+    </div>
+
+    <div class="full">
+      <label>දායකත්වය තෝරන්න *</label>
+      <select id="poyaCategory">
+        <option value="">තෝරන්න</option>
+        <option value="දාන">දාන දායකත්වය</option>
+        <option value="ගිලන්පස">ගිලන්පස දායකත්වය</option>
+        <option value="ධර්ම දේශනා">ධර්ම දේශනා දායකත්වය</option>
+      </select>
+    </div>
+
+    <div class="full">
+      <label>දායකත්වය පිළිබඳ විස්තර</label>
+      <textarea id="poyaNotes" placeholder="විස්තර ඇතුළත් කරන්න"></textarea>
+    </div>
+
+    <div class="full">
+      <button type="button" onclick="savePoyaRecord()">දායකත්වය සුරකින්න</button>
+    </div>
+  </div>
+
+  <div class="result">
+    <h3>📋 පොහොය දින දායක ලේඛනය</h3>
+    <div id="poyaRecords"></div>
+  </div>
 </section>
 
 \n<section class="card"><h2>ලියාපදිංචි දායකයන්</h2><div class="count" id="count">වාර්තා 0</div><div id="allRecords"></div><div class="btns"><button class="secondary" onclick="exportCSV()">දායක ලේඛනය CSV ලෙස ලබාගන්න</button><button class="secondary" onclick="backup()">දත්ත Backup කරන්න</button><label class="filebtn secondary">Backup නැවත ඇතුළත් කරන්න<input type="file" accept="application/json" onchange="restore(event)" hidden></label></div></section>
@@ -275,6 +377,136 @@ function exportDanaCSV(){
  download(new Blob([csv],{type:'text/csv;charset=utf-8'}),'dana_register.csv');
 }
 function backupDana(){download(new Blob([JSON.stringify(danaEntries,null,2)],{type:'application/json'}),'dana_backup.json')}
+
+const POYA_KEY = 'sugatha_poya_entries_v1';
+let poyaEntries = JSON.parse(localStorage.getItem(POYA_KEY) || '[]');
+
+function savePoyaData() {
+  localStorage.setItem(POYA_KEY, JSON.stringify(poyaEntries));
+  poyaEntries.forEach(r => persistDoc('poya_records', r));
+}
+
+function searchPoyaDonor() {
+  const land = $('poyaLandSearch').value.trim().toLowerCase();
+  const found = records.filter(r =>
+    String(r.land).trim().toLowerCase() === land
+  );
+
+  if (!land) {
+    $('poyaDonorResult').textContent = 'ඉඩම් අංකය ඇතුළත් කරන්න.';
+    return;
+  }
+
+  if (found.length === 1) {
+    $('poyaDonorResult').innerHTML =
+      '<p>හමු වූ දායකයා: ' + esc(found[0].name) +
+      ' — ඉඩම් අංකය: ' + esc(found[0].land) + '</p>';
+  } else if (found.length > 1) {
+    $('poyaDonorResult').textContent =
+      'මෙම ඉඩම් අංකයට නම් කිහිපයක් තිබේ. නිවැරදි දායකයා තහවුරු කළ යුතුයි.';
+  } else {
+    $('poyaDonorResult').textContent =
+      'දායකයෙකු හමු නොවීය. ඉඩම් අංකය පරීක්ෂා කරන්න.';
+  }
+}
+
+async function loadPoyaRecords() {
+  const date = $('poyaDate').value;
+  if (!date) {
+    alert('පොහොය දිනය තෝරන්න.');
+    return;
+  }
+
+  if (cloudReady && currentUser) {
+    try {
+      const snap = await docCollection('poya_records').get();
+      const remote = snap.docs.map(d => d.data());
+      const ids = new Set(poyaEntries.map(r => String(r.id)));
+
+      remote.forEach(r => {
+        if (!ids.has(String(r.id))) poyaEntries.push(r);
+      });
+
+      localStorage.setItem(POYA_KEY, JSON.stringify(poyaEntries));
+    } catch (err) {
+      alert('Cloud දත්ත ලබාගැනීමට නොහැකි විය: ' + err.message);
+    }
+  }
+
+  const found = poyaEntries.filter(r => r.date === date);
+
+  $('poyaRecords').innerHTML = found.length
+    ? found.map(r => `
+      <article class="result">
+        <h3>${esc(r.category)}</h3>
+        <p>දායකයා: ${esc(r.name)}</p>
+        <p>ඉඩම් අංකය: ${esc(r.land || 'නැත')}</p>
+        <p>දුරකථනය: ${esc(r.phone || '—')}</p>
+        <p>ලිපිනය: ${esc(r.address || '—')}</p>
+        <p>සටහන්: ${esc(r.notes || '—')}</p>
+        <button class="danger" onclick="deletePoyaRecord('${r.id}')">
+          මකා දමන්න
+        </button>
+      </article>
+    `).join('')
+    : '<p class="empty">මෙම දිනයට සටහන් නැත.</p>';
+}
+
+function savePoyaRecord() {
+  const date = $('poyaDate').value;
+  const category = $('poyaCategory').value;
+  const land = $('poyaLandSearch').value.trim();
+
+  if (!date || !category) {
+    alert('දිනය සහ දායකත්ව වර්ගය තෝරන්න.');
+    return;
+  }
+
+  let donor = null;
+  if (land) {
+    const matches = records.filter(r =>
+      String(r.land).trim().toLowerCase() === land.toLowerCase()
+    );
+
+    if (matches.length !== 1) {
+      alert('ඉඩම් අංකයට ගැළපෙන එක් දායකයෙකු පමණක් තිබිය යුතුයි.');
+      return;
+    }
+    donor = matches[0];
+  }
+
+  const name = donor ? donor.name : $('poyaNoLandName').value.trim();
+
+  if (!name) {
+    alert('දායකයාගේ නම ඇතුළත් කරන්න.');
+    return;
+  }
+
+  const item = {
+    id: String(Date.now()) + '-' + Math.random().toString(36).slice(2, 7),
+    date,
+    category,
+    land: donor ? donor.land : '',
+    name,
+    phone: donor ? donor.phone : $('poyaNoLandPhone').value.trim(),
+    address: donor ? donor.address : $('poyaNoLandAddress').value.trim(),
+    notes: $('poyaNotes').value.trim()
+  };
+
+  poyaEntries.push(item);
+  savePoyaData();
+  loadPoyaRecords();
+  alert('පොහොය දින දායකත්වය සුරැකුණා.');
+}
+
+function deletePoyaRecord(id) {
+  if (!confirm('මෙම සටහන මකා දැමීමට අවශ්‍යද?')) return;
+
+  poyaEntries = poyaEntries.filter(r => r.id !== id);
+  removeDoc('poya_records', id);
+  savePoyaData();
+  loadPoyaRecords();
+}
 
 render();renderDana();
 </script></body></html>
