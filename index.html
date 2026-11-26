@@ -77,6 +77,7 @@ input, select, textarea {
     <button type="button" onclick="document.getElementById('poyaSection').scrollIntoView({behavior:'smooth'})">🟣 පොහොය දින</button>
     <button type="button" onclick="document.getElementById('poyaSection').scrollIntoView({behavior:'smooth'})">🟦 උදෑසන ගිලන්පස</button>
     <button type="button" onclick="document.getElementById('poyaSection').scrollIntoView({behavior:'smooth'})">🟪 සවස ගිලන්පස</button>
+    <button type="button" onclick="document.getElementById('aidSection').scrollIntoView({behavior:'smooth'})">💰 ආධාර ලබාදීම</button>
   </div>
 </section>
 
@@ -117,6 +118,34 @@ input, select, textarea {
   <button type="button" onclick="loadPoyaRecords()">තෝරාගත් දිනයේ ලේඛනය බලන්න</button>
 
   <div id="poyaRecords"></div>
+  
+<section class="card" id="aidSection">
+  <h2>💰 ආධාර ලබාදීම</h2>
+
+  <label>දිනය</label>
+  <input type="date" id="aidDate">
+
+  <label>දායකයාගේ ඉඩම් අංකය</label>
+  <input id="aidLand" placeholder="ඉඩම් අංකය ඇතුළත් කරන්න">
+
+  <button type="button" onclick="searchAidDonor()">දායකයා සොයන්න</button>
+
+  <div id="aidDonorResult"></div>
+
+  <label>ආධාර මුදල (රු.)</label>
+  <input type="number" id="aidAmount" min="1" placeholder="මුදල ඇතුළත් කරන්න">
+
+  <label>සටහන්</label>
+  <textarea id="aidNotes" placeholder="අමතර සටහන්"></textarea>
+
+  <button type="button" onclick="saveAid()">ආධාරය සුරකින්න</button>
+
+  <h3>ආධාර එකතුව</h3>
+  <div id="aidTotal">රු. 0.00</div>
+
+  <div id="aidRecords"></div>
+</section>
+
 </section>
 
 <section class="card"><h2>ඉඩම් අංකයෙන් දායකයා සොයන්න</h2><div class="searchrow"><input id="search" placeholder="ඉඩම් අංකය ඇතුළත් කරන්න" autocomplete="off"><button onclick="searchRecord()">සොයන්න</button></div><p class="muted">ඉඩම් අංකයේ කොටසක් ඇතුළත් කළත් ගැළපෙන වාර්තා පෙන්වයි.</p><div id="results"></div></section>
@@ -508,5 +537,100 @@ function deletePoyaRecord(id) {
   loadPoyaRecords();
 }
 
-render();renderDana();
+const AID_KEY = 'sugatha_aid_entries_v1';
+let aidEntries = JSON.parse(localStorage.getItem(AID_KEY) || '[]');
+
+function searchAidDonor() {
+  const land = $('aidLand').value.trim().toLowerCase();
+
+  if (!land) {
+    $('aidDonorResult').textContent = 'ඉඩම් අංකය ඇතුළත් කරන්න.';
+    return;
+  }
+
+  const found = records.filter(r =>
+    String(r.land).trim().toLowerCase() === land
+  );
+
+  if (found.length === 1) {
+    $('aidDonorResult').innerHTML =
+      '<p>දායකයා: ' + esc(found[0].name) + '</p>';
+  } else if (found.length > 1) {
+    $('aidDonorResult').textContent =
+      'මෙම ඉඩම් අංකයට නම් කිහිපයක් තිබේ.';
+  } else {
+    $('aidDonorResult').textContent =
+      'දායකයෙකු හමු නොවීය. ඉඩම් අංකය පරීක්ෂා කරන්න.';
+  }
+}
+
+function renderAid() {
+  const total = aidEntries.reduce((sum, r) =>
+    sum + Number(r.amount || 0), 0
+  );
+
+  const land = $('aidLand').value.trim().toLowerCase();
+
+  const donorTotal = aidEntries
+    .filter(r => String(r.land).trim().toLowerCase() === land && land)
+    .reduce((sum, r) => sum + Number(r.amount || 0), 0);
+
+  $('aidTotal').innerHTML =
+    'සියලු ආධාර එකතුව: රු. ' + total.toFixed(2) +
+    '<br>මෙම දායකයාගේ ආධාර එකතුව: රු. ' +
+    donorTotal.toFixed(2);
+
+  $('aidRecords').innerHTML = aidEntries.length
+    ? aidEntries.map(r => `
+      <article class="result">
+        <p>දිනය: ${esc(r.date)}</p>
+        <p>දායකයා: ${esc(r.name)}</p>
+        <p>ඉඩම් අංකය: ${esc(r.land)}</p>
+        <p>ආධාර මුදල: රු. ${Number(r.amount).toFixed(2)}</p>
+        <p>සටහන්: ${esc(r.notes || '—')}</p>
+      </article>
+    `).join('')
+    : '<p>තවම ආධාර සටහන් නැත.</p>';
+}
+
+function saveAid() {
+  const date = $('aidDate').value;
+  const land = $('aidLand').value.trim();
+  const amount = Number($('aidAmount').value);
+
+  const found = records.filter(r =>
+    String(r.land).trim().toLowerCase() === land.toLowerCase()
+  );
+
+  if (!date || !land || !Number.isFinite(amount) || amount <= 0) {
+    alert('දිනය, ඉඩම් අංකය සහ නිවැරදි මුදල ඇතුළත් කරන්න.');
+    return;
+  }
+
+  if (found.length !== 1) {
+    alert('නිවැරදි එක් දායකයෙකු සොයාගත යුතුයි.');
+    return;
+  }
+
+  const item = {
+    id: String(Date.now()),
+    date,
+    land: found[0].land,
+    name: found[0].name,
+    amount,
+    notes: $('aidNotes').value.trim()
+  };
+
+  aidEntries.push(item);
+  localStorage.setItem(AID_KEY, JSON.stringify(aidEntries));
+  persistDoc('aid_records', item);
+
+  $('aidAmount').value = '';
+  $('aidNotes').value = '';
+
+  renderAid();
+  alert('ආධාරය සාර්ථකව සුරැකුණා.');
+}
+
+render();renderDana();renderAid();
 </script></body></html>
