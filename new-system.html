@@ -691,6 +691,204 @@ danaButton.addEventListener("click", function() {
   });
 })();
 </script>
+<script>
+(function () {
+  const buttons = document.querySelectorAll('.main-button');
+  const original = buttons[2];
+  if (!original) return;
+
+  const btn = original.cloneNode(true);
+  original.parentNode.replaceChild(btn, original);
+
+  btn.addEventListener('click', function () {
+    const container = document.querySelector('.main-container');
+    const grid = document.querySelector('.button-grid');
+    if (!container || !grid) return;
+
+    grid.style.display = 'none';
+
+    let records = JSON.parse(localStorage.getItem('sugathaPoya') || '[]');
+
+    container.insertAdjacentHTML('beforeend', `
+      <section id="poyaPage">
+        <h2>03. පොහොය දින දාන ලේඛනය</h2>
+        <p>ශ්‍රී සුගත විවේක සේනාසනය</p>
+
+        <label>පොහොය දිනය</label>
+        <input type="date" id="poyaDate">
+
+        <label>දාන / පින්කම් වර්ගය</label>
+        <select id="poyaType">
+          <option value="පොහොය උදෑසන දානය">පොහොය උදෑසන දානය</option>
+          <option value="පොහොය දහවල් දානය">පොහොය දහවල් දානය</option>
+          <option value="ගිලන්පස උදෑසන">ගිලන්පස උදෑසන</option>
+          <option value="ගිලන්පස සවස">ගිලන්පස සවස</option>
+          <option value="ධර්ම දේශනා උදෑසන">ධර්ම දේශනා උදෑසන</option>
+          <option value="ධර්ම දේශනා සවස">ධර්ම දේශනා සවස</option>
+        </select>
+
+        <label>දායක ඉඩම් අංකය</label>
+        <input id="poyaLand" placeholder="ඉඩම් අංකය ඇතුළත් කරන්න">
+        <button type="button" id="poyaFind">දායකයා සොයන්න</button>
+
+        <div id="poyaDonorInfo"></div>
+
+        <label>විස්තර</label>
+        <textarea id="poyaDetails" placeholder="දානයේ හෝ පින්කමේ විස්තර"></textarea>
+
+        <label>සටහන</label>
+        <textarea id="poyaNote" placeholder="අමතර සටහන්"></textarea>
+
+        <button type="button" id="poyaSave">සුරකින්න</button>
+
+        <hr>
+        <h3>සුරැකි තොරතුරු සොයන්න</h3>
+        <label>ඉඩම් අංකය</label>
+        <input id="poyaSearch" placeholder="ඉඩම් අංකය">
+        <button type="button" id="poyaSearchBtn">සොයන්න</button>
+        <div id="poyaResults"></div>
+
+        <button type="button" id="poyaBack">ආපසු ප්‍රධාන පිටුවට</button>
+      </section>
+    `);
+
+    const page = document.getElementById('poyaPage');
+    let editingId = null;
+    let donor = null;
+
+    function findDonor(land) {
+      const donors = JSON.parse(localStorage.getItem('sugathaDonors') || '[]');
+      return donors.find(d => String(d.landNo || '').trim().toLowerCase()
+        === String(land).trim().toLowerCase());
+    }
+
+    function showDonor(d) {
+      donor = d;
+      const info = document.getElementById('poyaDonorInfo');
+      if (!d) {
+        info.textContent = 'දායක තොරතුරු හමු නොවීය';
+        return;
+      }
+      info.innerHTML = '';
+      const name = document.createElement('p');
+      name.textContent = 'දායකයා: ' + (d.donorName || '');
+      info.appendChild(name);
+      ['phone1', 'phone2', 'phone3'].forEach(key => {
+        if (d[key]) {
+          const link = document.createElement('a');
+          link.href = 'tel:' + d[key];
+          link.textContent = '📞 ' + d[key];
+          link.style.display = 'block';
+          info.appendChild(link);
+        }
+      });
+    }
+
+    document.getElementById('poyaFind').onclick = function () {
+      const land = document.getElementById('poyaLand').value.trim();
+      showDonor(findDonor(land));
+    };
+
+    document.getElementById('poyaSave').onclick = function () {
+      const date = document.getElementById('poyaDate').value;
+      const type = document.getElementById('poyaType').value;
+      const land = document.getElementById('poyaLand').value.trim();
+
+      if (!date || !land) {
+        alert('දිනය සහ ඉඩම් අංකය ඇතුළත් කරන්න.');
+        return;
+      }
+
+      const foundDonor = findDonor(land);
+      if (!foundDonor) {
+        alert('පළමුව නිවැරදි දායක ඉඩම් අංකය සොයන්න.');
+        return;
+      }
+
+      const record = {
+        id: editingId || Date.now(),
+        date,
+        type,
+        landNo: land,
+        donorName: foundDonor.donorName || '',
+        details: document.getElementById('poyaDetails').value,
+        note: document.getElementById('poyaNote').value
+      };
+
+      if (editingId) {
+        records = records.map(r => r.id === editingId ? record : r);
+      } else {
+        records.push(record);
+      }
+
+      localStorage.setItem('sugathaPoya', JSON.stringify(records));
+      alert('තොරතුරු සුරැකුණා.');
+      editingId = null;
+      document.getElementById('poyaDetails').value = '';
+      document.getElementById('poyaNote').value = '';
+      document.getElementById('poyaLand').value = '';
+      document.getElementById('poyaDonorInfo').textContent = '';
+      donor = null;
+    };
+
+    document.getElementById('poyaSearchBtn').onclick = function () {
+      const land = document.getElementById('poyaSearch').value.trim();
+      const results = records.filter(r => r.landNo === land);
+      const area = document.getElementById('poyaResults');
+      area.innerHTML = '';
+
+      if (!results.length) {
+        area.textContent = 'තොරතුරු හමු නොවීය';
+        return;
+      }
+
+      results.forEach(r => {
+        const item = document.createElement('div');
+        item.style.border = '1px solid #999';
+        item.style.padding = '10px';
+        item.style.margin = '8px 0';
+
+        const info = document.createElement('p');
+        info.textContent = r.date + ' | ' + r.type + ' | ' +
+          r.donorName + ' | ' + r.details;
+        item.appendChild(info);
+
+        const edit = document.createElement('button');
+        edit.textContent = 'සංස්කරණය';
+        edit.onclick = function () {
+          editingId = r.id;
+          document.getElementById('poyaDate').value = r.date;
+          document.getElementById('poyaType').value = r.type;
+          document.getElementById('poyaLand').value = r.landNo;
+          document.getElementById('poyaDetails').value = r.details;
+          document.getElementById('poyaNote').value = r.note;
+          showDonor(findDonor(r.landNo));
+          page.scrollIntoView();
+        };
+        item.appendChild(edit);
+
+        const del = document.createElement('button');
+        del.textContent = 'මකන්න';
+        del.onclick = function () {
+          if (confirm('මෙම සටහන මකා දමන්නද?')) {
+            records = records.filter(x => x.id !== r.id);
+            localStorage.setItem('sugathaPoya', JSON.stringify(records));
+            document.getElementById('poyaSearchBtn').click();
+          }
+        };
+        item.appendChild(del);
+        area.appendChild(item);
+      });
+    };
+
+    document.getElementById('poyaBack').onclick = function () {
+      page.remove();
+      grid.style.display = '';
+    };
+  });
+})();
+</script>
+
 
 
 
