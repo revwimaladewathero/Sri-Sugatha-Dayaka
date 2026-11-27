@@ -337,5 +337,170 @@ donorButton.addEventListener("click", function() {
   };
 });
 </script>
+<script>
+const danaOldButton = document.querySelectorAll(".main-button")[1];
+const danaButton = danaOldButton.cloneNode(true);
+danaOldButton.replaceWith(danaButton);
+
+danaButton.addEventListener("click", function() {
+  const main = document.querySelector(".main-container");
+  const grid = document.querySelector(".button-grid");
+  const oldPage = document.getElementById("section-page");
+  if (oldPage) oldPage.remove();
+
+  grid.style.display = "none";
+
+  const page = document.createElement("section");
+  page.id = "section-page";
+  page.style.cssText =
+    "background:#fff9e9;color:#073d2c;padding:16px;margin:15px 0;border-radius:15px;";
+
+  page.innerHTML = `
+    <h2>දාන ලේඛනය</h2>
+
+    <label>දානය පැවැත්වෙන දිනය</label>
+    <input type="date" id="danaDate"
+      style="width:100%;padding:12px;margin:8px 0 15px">
+
+    <label>දානය පැවැත්වෙන වේලාව</label>
+    <select id="danaTime"
+      style="width:100%;padding:12px;margin:8px 0 15px">
+      <option value="උදෑසන">උදෑසන දානය</option>
+      <option value="දහවල්">දහවල් දානය</option>
+    </select>
+
+    <label>දායකයාගේ ඉඩම් අංකය</label>
+    <input id="danaLand" placeholder="ඉඩම් අංකය"
+      style="width:100%;padding:12px;margin:8px 0">
+
+    <button id="findDanaDonor"
+      style="padding:10px;margin-bottom:12px">දායකයා සොයන්න</button>
+
+    <p id="danaDonorName">දායකයාගේ නම: තවම තෝරා නැත</p>
+    <div id="danaPhones"></div>
+
+    <label>සටහන</label>
+    <textarea id="danaNote"
+      style="width:100%;padding:12px;margin:8px 0 15px"></textarea>
+
+    <button id="saveDana"
+      style="padding:12px;background:#075b3c;color:white;border:0;border-radius:8px">
+      දාන තොරතුරු සුරකින්න
+    </button>
+
+    <hr>
+    <h3>ඉඩම් අංකයෙන් දාන ලේඛනය සොයන්න</h3>
+    <input id="searchDanaLand" placeholder="ඉඩම් අංකය"
+      style="width:100%;padding:12px;margin:8px 0">
+    <button id="searchDana"
+      style="padding:10px">සොයන්න</button>
+    <div id="danaResults"></div>
+
+    <button id="backDana"
+      style="padding:12px;margin-top:18px;background:#073d2c;color:white;border:0;border-radius:8px">
+      මුල් පිටුවට
+    </button>
+  `;
+
+  main.appendChild(page);
+
+  let selectedDonor = null;
+
+  function getDonors() {
+    return JSON.parse(localStorage.getItem("sugathaDonors") || "[]");
+  }
+
+  function getDanaRecords() {
+    return JSON.parse(localStorage.getItem("sugathaDana") || "[]");
+  }
+
+  document.getElementById("findDanaDonor").onclick = function() {
+    const land = document.getElementById("danaLand").value.trim();
+    selectedDonor = getDonors().find(d => d.land === land);
+
+    const name = document.getElementById("danaDonorName");
+    const phones = document.getElementById("danaPhones");
+    phones.replaceChildren();
+
+    if (!selectedDonor) {
+      name.textContent = "දායක තොරතුරු හමු නොවීය.";
+      return;
+    }
+
+    name.textContent = "දායකයාගේ නම: " + selectedDonor.name;
+
+    (selectedDonor.phones || []).filter(Boolean).forEach(phone => {
+      const link = document.createElement("a");
+      link.href = "tel:" + phone;
+      link.textContent = "දුරකථන ඇමතුම: " + phone;
+      link.style.display = "block";
+      phones.appendChild(link);
+    });
+  };
+
+  document.getElementById("saveDana").onclick = function() {
+    const date = document.getElementById("danaDate").value;
+    const land = document.getElementById("danaLand").value.trim();
+    const time = document.getElementById("danaTime").value;
+
+    if (!date || !land) {
+      alert("දිනය සහ ඉඩම් අංකය ඇතුළත් කරන්න.");
+      return;
+    }
+
+    const donor = getDonors().find(d => d.land === land);
+    if (!donor) {
+      alert("පළමුව දායක තොරතුරු කොටසට දායකයා ඇතුළත් කරන්න.");
+      return;
+    }
+
+    const records = getDanaRecords();
+    records.push({
+      date,
+      time,
+      land,
+      name: donor.name,
+      note: document.getElementById("danaNote").value
+    });
+
+    localStorage.setItem("sugathaDana", JSON.stringify(records));
+
+    alert("දාන තොරතුරු සුරැකුණා.");
+    document.getElementById("danaDate").value = "";
+    document.getElementById("danaLand").value = "";
+    document.getElementById("danaNote").value = "";
+    document.getElementById("danaDonorName").textContent =
+      "දායකයාගේ නම: තවම තෝරා නැත";
+    document.getElementById("danaPhones").replaceChildren();
+    selectedDonor = null;
+  };
+
+  document.getElementById("searchDana").onclick = function() {
+    const land = document.getElementById("searchDanaLand").value.trim();
+    const records = getDanaRecords().filter(r => r.land === land);
+    const results = document.getElementById("danaResults");
+    results.replaceChildren();
+
+    if (!records.length) {
+      results.textContent = "දාන තොරතුරු හමු නොවීය.";
+      return;
+    }
+
+    records.forEach(record => {
+      const item = document.createElement("p");
+      item.textContent =
+        record.date + " | " + record.time + " | " +
+        record.name + " | " + record.note;
+      results.appendChild(item);
+    });
+  };
+
+  document.getElementById("backDana").onclick = function() {
+    page.remove();
+    grid.style.display = "grid";
+  };
+});
+</script>
+
 
 
