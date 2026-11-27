@@ -153,3 +153,47 @@ buttons.forEach((button, index) => {
   });
 });
 </script>
+<script>
+document.querySelectorAll(".main-button").forEach((oldButton) => {
+  const button = oldButton.cloneNode(true);
+  oldButton.replaceWith(button);
+
+  button.addEventListener("click", function() {
+    const main = document.querySelector(".main-container");
+    const grid = document.querySelector(".button-grid");
+
+    const oldPage = document.getElementById("section-page");
+    if (oldPage) oldPage.remove();
+
+    grid.style.display = "none";
+
+    const page = document.createElement("section");
+    page.id = "section-page";
+    page.style.cssText =
+      "background:#fff9e9;color:#073d2c;padding:20px;margin:20px 0;border-radius:15px;text-align:center;";
+
+    const title = document.createElement("h2");
+    title.textContent = button.textContent;
+
+    const message = document.createElement("p");
+    message.textContent =
+      "මෙම කොටස සඳහා අවශ්‍ය පහසුකම් සකස් කරමින් පවතී.";
+
+    const back = document.createElement("button");
+    back.textContent = "මුල් පිටුවට";
+    back.style.cssText =
+      "padding:12px 22px;background:#073d2c;color:white;border:0;border-radius:9px;font-size:16px;";
+
+    back.onclick = function() {
+      page.remove();
+      grid.style.display = "grid";
+    };
+
+    page.appendChild(title);
+    page.appendChild(message);
+    page.appendChild(back);
+    main.appendChild(page);
+  });
+});
+</script>
+
