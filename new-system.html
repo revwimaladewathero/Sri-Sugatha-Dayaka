@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ශ්‍රී සුගත දායක තොරතුරු පද්ධතිය</title>
+<style>
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #073d2c;
+  color: #ffffff;
+}
+header {
+  text-align: center;
+  padding: 25px 10px;
+  background: linear-gradient(135deg,#063323,#16704b);
+  border-bottom: 4px solid #d8b45b;
+}
+header h1 {
+  font-size: 24px;
+  margin: 5px;
+}
+header p {
+  margin: 5px;
+  color: #f5df9c;
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>ශ්‍රී සුගත දායක තොරතුරු පද්ධතිය</h1>
+<p>ශ්‍රී සුගත විවේක සේනාසනය</p>
+<p>කු.ග 05, දකුණු ඉවුර, මුවන් වැව, ලුණුගම්වෙහෙර</p>
+</header>
+</body>
+</html>
+<style>
+.main-container {
+  max-width: 900px;
+  margin: 25px auto;
+  padding: 12px;
+}
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.main-button {
+  min-height: 90px;
+  padding: 12px;
+  border: 2px solid #d8b45b;
+  border-radius: 15px;
+  background: linear-gradient(145deg,#fff4ce,#d8b45b);
+  color: #073d2c;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.main-button:active {
+  transform: scale(0.97);
+}
+@media(max-width:400px) {
+  .main-button {
+    font-size: 13px;
+  }
+}
+</style>
+
+<main class="main-container">
+<div class="button-grid">
+
+<button class="main-button">01. දායක තොරතුරු</button>
+<button class="main-button">02. දාන ලේඛනය</button>
+<button class="main-button">03. පොහොය දින දාන ලේඛනය</button>
+<button class="main-button">04. මුදල් හා භාණ්ඩ පරිත්‍යාග</button>
+<button class="main-button">05. ඡායාරූප හා වීඩියෝ</button>
+<button class="main-button">06. පෞද්ගලික ගොනුව</button>
+<button class="main-button">07. භාණ්ඩ ලේඛනය</button>
+<button class="main-button">08. වියදම් ලේඛනය</button>
+<button class="main-button">09. විහාරස්ථාන සංවර්ධන කටයුතු</button>
+<button class="main-button">10. විහාරස්ථාන දින දර්ශනය</button>
+<button class="main-button">11. නිවේදන හා දැනුම්දීම්</button>
+<button class="main-button">12. ලේඛන හා වාර්තා ගබඩාව</button>
+<button class="main-button">13. වාර්තා හා සාරාංශ</button>
+<button class="main-button">14. සාමණේර අවශ්‍යතා</button>
+<button class="main-button">15. භාණ්ඩ පරීක්ෂණ</button>
+<button class="main-button">16. බුද්ධ පූජා භාණ්ඩ</button>
+<button class="main-button">17. පින්කම් භාණ්ඩ නිකුත් කිරීම හා භාරගැනීම</button>
+
+</div>
+</main>
+<script>
+const sectionNames = [
+"දායක තොරතුරු",
+"දාන ලේඛනය",
+"පොහොය දින දාන ලේඛනය",
+"මුදල් හා භාණ්ඩ පරිත්‍යාග",
+"ඡායාරූප හා වීඩියෝ",
+"පෞද්ගලික ගොනුව",
+"භාණ්ඩ ලේඛනය",
+"වියදම් ලේඛනය",
+"විහාරස්ථාන සංවර්ධන කටයුතු",
+"විහාරස්ථාන දින දර්ශනය",
+"නිවේදන හා දැනුම්දීම්",
+"ලේඛන හා වාර්තා ගබඩාව",
+"වාර්තා හා සාරාංශ",
+"සාමණේර අවශ්‍යතා",
+"භාණ්ඩ පරීක්ෂණ",
+"බුද්ධ පූජා භාණ්ඩ",
+"පින්කම් භාණ්ඩ නිකුත් කිරීම හා භාරගැනීම"
+];
+
+const buttons = document.querySelectorAll(".main-button");
+
+buttons.forEach((button, index) => {
+  button.addEventListener("click", function() {
+    const oldPage = document.getElementById("section-page");
+    if (oldPage) oldPage.remove();
+
+    document.querySelector(".main-container").style.display = "none";
+
+    const page = document.createElement("section");
+    page.id = "section-page";
+    page.style.cssText =
+      "background:#fff9e9;color:#073d2c;padding:20px;margin:20px 12px;border-radius:15px;text-align:center;";
+
+    const title = document.createElement("h2");
+    title.textContent = sectionNames[index];
+
+    const message = document.createElement("p");
+    message.textContent =
+      "මෙම කොටස සඳහා අවශ්‍ය පහසුකම් සකස් කරමින් පවතී.";
+
+    const back = document.createElement("button");
+    back.textContent = "මුල් පිටුවට";
+    back.style.cssText =
+      "padding:12px 22px;background:#073d2c;color:white;border:0;border-radius:9px;font-size:16px;";
+    back.onclick = function() {
+      page.remove();
+      document.querySelector(".main-container").style.display = "block";
+    };
+
+    page.appendChild(title);
+    page.appendChild(message);
+    page.appendChild(back);
+    document.querySelector("main").appendChild(page);
+  });
+});
+</script>
