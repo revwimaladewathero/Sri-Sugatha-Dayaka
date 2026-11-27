@@ -1,3 +1,19 @@
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#12452c">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./service-worker.js")
+      .then(function () {
+        console.log("ශ්‍රී සුගත ඇප් එක සූදානම්");
+      })
+      .catch(function (error) {
+        console.error("Service Worker දෝෂය:", error);
+      });
+  });
+}
+</script>
 <script>
 (function () {
   const donorButtonOld = document.querySelectorAll(".main-button")[0];
