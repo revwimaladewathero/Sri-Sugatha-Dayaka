@@ -2,6 +2,43 @@
 <html lang="si">
 <head>
   <meta charset="UTF-8">
+  <style>
+body {
+  margin: 0;
+  padding: 15px;
+  background: #f5f3e8;
+  font-family: sans-serif;
+}
+
+.main-container {
+  max-width: 1100px;
+  margin: auto;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  gap: 12px;
+  padding: 15px 0;
+}
+
+.main-button {
+  background: linear-gradient(135deg, #176b3a, #0b4729);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 18px 10px;
+  min-height: 75px;
+  font-size: 15px;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  cursor: pointer;
+}
+
+.main-button:active {
+  transform: scale(0.97);
+}
+</style>
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#12452c">
 <meta name="viewport" content="width=device-width, initial-scale=1">
