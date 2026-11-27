@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="si">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ශ්‍රී සුගත දායක තොරතුරු පද්ධතිය</title>
+<style>
+:root{--g:#145b3a;--g2:#1b7048;--gold:#d6ad45;--bg:#f4f7f3}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#20372a;font-family:Arial,"Noto Sans Sinhala",sans-serif}
+header{background:linear-gradient(120deg,#10452e,#1c7048);color:#fff;text-align:center;padding:22px 12px 18px;border-bottom:4px solid var(--gold)}
+header h1{font-size:21px;margin:0 0 7px}header p{font-size:13px;margin:0;line-height:1.6}
+main{max-width:900px;margin:16px auto;padding:0 12px 28px}
+.info{background:#fff8e6;border:1px solid #e8d18d;padding:12px;border-radius:10px;font-size:13px;line-height:1.65;margin-bottom:14px}
+.menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.menu button{border:0;border-radius:11px;padding:14px 9px;min-height:68px;color:white;font-size:14px;font-weight:700;box-shadow:0 2px 5px #0002;text-align:left}
+.menu button.active{outline:3px solid var(--gold);outline-offset:1px;filter:brightness(.92)}
+.menu button span{display:block;font-size:11px;font-weight:400;opacity:.9;margin-top:5px}
+.panel{display:none;background:#fff;border-radius:13px;padding:16px;margin-top:15px;box-shadow:0 2px 9px #0000000d}
+.panel.active{display:block}.panel h2{color:var(--g);font-size:19px;margin:0 0 13px}
+.back{background:#edf4ef;color:var(--g);border:0;border-radius:8px;padding:9px 12px;font-weight:700;margin-bottom:12px}
+label{display:block;font-size:14px;font-weight:700;margin:12px 0 5px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #cbd8ce;border-radius:8px;font-size:15px;background:white}
+textarea{min-height:70px}
+.fieldgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.phone-card{border:1px solid #dce6de;border-radius:10px;padding:11px;margin:11px 0;background:#fbfdfb}
+.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.call,.wa,.check{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border:0;border-radius:8px;padding:9px 12px;font-weight:700;font-size:13px}
+.call{background:#e7f4eb;color:#145b3a}.wa{background:#dcf7e5;color:#087b3e}.check{background:#edf1f5;color:#34495e}
+.status{font-size:12px;color:#53675a;margin-top:7px;line-height:1.5}.status.ok{color:#087b3e;font-weight:700}.status.no{color:#9b3a32}
+.note{font-size:12px;color:#627168;line-height:1.6}
+@media(max-width:420px){.menu{gap:7px}.menu button{font-size:12px;padding:11px 7px}.fieldgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><h1>ශ්‍රී සුගත දායක තොරතුරු පද්ධතිය</h1><p>ශ්‍රී සුගත විවේක සේනාසනය<br>බොත්තම් 16 පරීක්ෂණ පිටුව</p></header>
+<main>
+<div class="info"><b>පරීක්ෂණ පිටුවකි.</b> බොත්තම් 16ම එකින් එක විවෘත කර පරීක්ෂා කළ හැකිය. මෙහි ඇතුළත් කරන දත්ත තවම Firebase/Cloud වෙත සුරැකෙන්නේ නැත. සැබෑ දායක තොරතුරු වෙනුවට පරීක්ෂණ දත්ත පමණක් භාවිතා කරන්න.</div>
+<div class="menu" id="menu"></div>
+<div id="panels"></div>
+</main>
+<script>
+const items=[
+['දායක තොරතුරු','දායකයන්ගේ මූලික විස්තර'],['දාන ලේඛනය','දිනපතා දාන භාරගැනීම්'],['පොහොය දින දාන ලේඛනය','පොහොය දින දාන / ගිලන්පස / ධර්ම දේශනා'],['මුදල් හා භාණ්ඩ පරිත්‍යාග','මුදල් සහ භාණ්ඩ ලැබීම්'],['ඡායාරූප හා වීඩියෝ','ඡායාරූප සහ වීඩියෝ ගොනු'],['පෞද්ගලික ගොනුව','පුද්ගලික ලේඛන'],['භාණ්ඩ ලේඛනය','විහාරස්ථාන භාණ්ඩ'],['වියදම් ලේඛනය','වියදම් සටහන්'],['විහාරස්ථාන සංවර්ධන කටයුතු','සංවර්ධන ව්‍යාපෘති'],['විහාරස්ථාන දින දර්ශනය','වැඩසටහන් සහ දිනයන්'],['නිවේදන හා දැනුම්දීම්','නිවේදන'],['ලේඛන හා වාර්තා ගබඩාව','ලේඛන ගබඩා කිරීම'],['වාර්තා හා සාරාංශ','වාර්තා සහ එකතුවීම්'],['සාමණේර අවශ්‍යතා','සාමණේර අවශ්‍යතා සටහන්'],['භාණ්ඩ පරීක්ෂණ','භාණ්ඩ පරීක්ෂා කිරීම'],['බුද්ධ පූජා භාණ්ඩ','බුද්ධ පූජා භාණ්ඩ ලේඛනය']];
+const colors=['#176443','#287b57','#986b22','#28718a','#7057a2','#596579','#8a5b3b','#9a4d48','#44765d','#54718e','#8a6840','#5b668c','#376f72','#80604d','#6d7650','#92703b'];
+const menu=document.getElementById('menu'),panels=document.getElementById('panels');
+function field(label,placeholder='',type='text'){return `<label>${label}</label><input type="${type}" placeholder="${placeholder}">`;}
+function phoneFields(container){
+ const wrap=document.createElement('div');
+ wrap.innerHTML='<h3 style="font-size:16px;color:#145b3a;margin:18px 0 5px">දුරකථන අංක (අවශ්‍ය පරිදි 1–3ක්)</h3><p class="note">අංකය ඔබන විට ඇමතුම් තිරය විවෘත වේ. WhatsApp සඳහා පරීක්ෂා කර තහවුරු කළ පසු පමණක් ලකුණ පෙන්වයි.</p>';
+ for(let n=1;n<=3;n++){
+  const c=document.createElement('div');c.className='phone-card';
+  c.innerHTML=`<label>දුරකථන අංකය ${n}</label><input type="tel" inputmode="tel" placeholder="07XXXXXXXX"><div class="actions"><a class="call" href="#">📞 ඇමතුම</a><button class="check" type="button">WhatsApp පරීක්ෂා කරන්න</button><span class="slot"></span></div><div class="status">අංකයක් ඇතුළත් කළ පසු පරීක්ෂා කරන්න.</div>`;
+  const inp=c.querySelector('input'),call=c.querySelector('.call'),check=c.querySelector('.check'),slot=c.querySelector('.slot'),status=c.querySelector('.status');
+  const clean=()=>inp.value.replace(/[^\d+]/g,'').replace(/^0/,'94').replace(/^\+/,'');
+  inp.addEventListener('input',()=>{call.href=inp.value.trim()?'tel:'+inp.value.trim():'#';slot.innerHTML='';c.querySelector('.confirm')?.remove();status.textContent='අංකය ඇතුළත් කළ පසු WhatsApp පරීක්ෂා කරන්න.';status.className='status';});
+  check.addEventListener('click',()=>{
+   let num=clean();if(num.length<9){status.textContent='නිවැරදි දුරකථන අංකයක් ඇතුළත් කරන්න.';status.className='status no';return;}
+   window.open('https://wa.me/'+num,'_blank');
+   status.textContent='WhatsApp තුළ අංකය පරීක්ෂා කරන්න. ගිණුමක් තිබේ නම් පහත තහවුරු කරන්න.';
+   if(!c.querySelector('.confirm')){
+    const conf=document.createElement('label');conf.className='confirm';conf.style.fontWeight='400';conf.innerHTML='<input type="checkbox" style="width:auto;margin-right:7px"> මෙම අංකයට WhatsApp තිබෙන බව තහවුරු කළා';c.appendChild(conf);
+    conf.querySelector('input').addEventListener('change',e=>{slot.innerHTML=e.target.checked?`<a class="wa" target="_blank" rel="noopener" href="https://wa.me/${num}">🟢 WhatsApp</a>`:'';status.textContent=e.target.checked?'තහවුරු කළ WhatsApp ලකුණ පෙන්වයි.':'තහවුරු කිරීම ඉවත් කළා.';status.className=e.target.checked?'status ok':'status';});
+   }
+  });
+  wrap.appendChild(c);
+ }
+ container.appendChild(wrap);
+}
+items.forEach((it,i)=>{
+ const b=document.createElement('button');b.style.background=colors[i];b.innerHTML=`${i+1}. ${it[0]}<span>${it[1]}</span>`;b.onclick=()=>show(i);menu.appendChild(b);
+ const p=document.createElement('section');p.className='panel';p.innerHTML=`<button class="back" onclick="show(-1)">← සියලු බොත්තම් වෙත</button><h2>${i+1}. ${it[0]}</h2>`;
+ if(i===0){
+  p.innerHTML+=field('ඉඩම් අංකය','ඉඩම් අංකය')+field('නම','සම්පූර්ණ නම')+field('ලිපිනය','ලිපිනය')+field('ප්‍රදේශය','ප්‍රදේශය');
+  phoneFields(p);
+ }else if(i===1){
+  p.innerHTML+=field('ඉඩම් අංකය','ඉඩම් අංකය')+field('දායකයාගේ නම','නම')+field('ලිපිනය','ලිපිනය')+field('ප්‍රදේශය','ප්‍රදේශය')+
+  '<div class="fieldgrid"><div>'+field('වර්ෂය','වර්ෂය','number')+'</div><div>'+field('මාසය','මාසය','number')+'</div><div>'+field('දිනය','දිනය','number')+'</div><div><label>දානය</label><select><option>උදෑසන දානය</option><option>දහවල් දානය</option></select></div></div>'+field('සටහන','සටහන');
+  phoneFields(p);
+ }else if(i===2){
+  p.innerHTML+='<label>දාන / පූජා වර්ගය</label><select><option>පොහොය දින උදෑසන දානය</option><option>පොහොය දින දහවල් දානය</option><option>ගිලන්පස උදෑසන</option><option>ගිලන්පස සවස</option><option>ධර්ම දේශනා උදෑසන</option><option>ධර්ම දේශනා සවස</option></select>'+field('ඉඩම් අංකය','ඉඩම් අංකය')+field('නම','නම')+field('ප්‍රදේශය','ප්‍රදේශය')+field('දිනය','දිනය','date')+field('සටහන','සටහන');phoneFields(p);
+ }else if(i===3){
+  p.innerHTML+=field('දායකයාගේ නම','නම')+field('ඉඩම් අංකය','ඉඩම් අංකය')+field('ප්‍රදේශය','ප්‍රදේශය')+field('දුරකථන අංකය','07XXXXXXXX','tel')+'<label>පරිත්‍යාග වර්ගය</label><select><option>මුදල්</option><option>භාණ්ඩ</option></select>'+field('මුදල් ප්‍රමාණය / භාණ්ඩ විස්තර','විස්තර')+field('දිනය','දිනය','date');
+ }else{
+  p.innerHTML+=`<p>${it[1]} සඳහා පරීක්ෂණ කොටස.</p><div class="note">මෙම බොත්තමේ සම්පූර්ණ විශේෂාංග ඊළඟ සංවර්ධන අදියරේදී එකින් එක සකස් කර පරීක්ෂා කරනු ඇත.</div>`;
+  if(i===6){p.innerHTML+=field('භාණ්ඩ නම','භාණ්ඩ නම')+field('ප්‍රමාණය','ප්‍රමාණය','number')+field('ස්ථානය','ස්ථානය')+field('සටහන','සටහන');}
+  if(i===7){p.innerHTML+=field('වියදම් විස්තරය','විස්තරය')+field('මුදල','මුදල','number')+field('දිනය','දිනය','date');}
+  if(i===8){p.innerHTML+=field('ව්‍යාපෘතියේ නම','නම')+field('විස්තරය','විස්තරය')+field('ආරම්භක දිනය','දිනය','date');}
+  if(i===9){p.innerHTML+=field('වැඩසටහන','වැඩසටහන')+field('දිනය','දිනය','date')+field('වේලාව','වේලාව','time');}
+  if(i===10){p.innerHTML+=field('මාතෘකාව','මාතෘකාව')+'<label>නිවේදනය</label><textarea placeholder="විස්තරය"></textarea>';}
+  if(i===13){p.innerHTML+=field('අවශ්‍යතාව','විස්තරය')+field('ප්‍රමාණය','ප්‍රමාණය');}
+ }
+ panels.appendChild(p);
+});
+function show(i){[...panels.children].forEach((p,j)=>p.classList.toggle('active',i===j));[...menu.children].forEach((b,j)=>b.classList.toggle('active',i===j));}
+show(-1);
+</script>
+</body></html>
