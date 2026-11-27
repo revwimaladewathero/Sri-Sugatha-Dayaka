@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="si">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ශ්‍රී සුගත දායක තොරතුරු පද්ධතිය – දුරකථන පරීක්ෂණය</title>
+<style>
+:root{--green:#145b3a;--gold:#d6ad45;--bg:#f4f7f3}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,"Noto Sans Sinhala",sans-serif;background:var(--bg);color:#183326}
+header{background:linear-gradient(120deg,#10452e,#1c7048);color:white;text-align:center;padding:22px 12px;border-bottom:4px solid var(--gold)}
+h1{font-size:21px;margin:0 0 7px}header p{margin:0;font-size:13px}
+main{max-width:850px;margin:18px auto;padding:0 12px}
+.notice{background:#fff8e6;border:1px solid #e8d18d;padding:12px;border-radius:10px;font-size:14px;line-height:1.6;margin-bottom:16px}
+nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:18px}
+nav button{border:0;border-radius:10px;padding:13px 8px;background:#fff;box-shadow:0 1px 5px #0001;color:#174b34;font-weight:700;font-size:14px}
+nav button.active{background:#1b6844;color:#fff;outline:2px solid var(--gold)}
+.panel{display:none;background:white;border-radius:13px;padding:16px;box-shadow:0 2px 9px #0000000d;margin-bottom:20px}
+.panel.active{display:block}.panel h2{font-size:19px;color:var(--green);margin:0 0 14px}
+label{display:block;font-size:14px;font-weight:700;margin:12px 0 5px}
+input{width:100%;padding:12px;border:1px solid #cbd8ce;border-radius:8px;font-size:16px}
+.phone-card{border:1px solid #dce6de;border-radius:10px;padding:12px;margin:12px 0;background:#fbfdfb}
+.phone-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.phone-row input{flex:1;min-width:160px}
+.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:9px}
+a.call,a.wa,.check{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border:0;border-radius:8px;padding:9px 12px;font-weight:700;font-size:14px}
+a.call{background:#e7f4eb;color:#145b3a}a.wa{background:#dcf7e5;color:#087b3e}.check{background:#edf1f5;color:#34495e}
+.status{font-size:13px;color:#53675a;margin-top:7px;min-height:18px}
+.status.ok{color:#087b3e;font-weight:700}.status.no{color:#9b3a32}
+.save{background:var(--green);color:white;border:0;border-radius:9px;padding:12px 18px;font-size:15px;font-weight:700;margin-top:8px}
+small{color:#68776d;line-height:1.5}
+@media(max-width:420px){nav{gap:7px}nav button{font-size:12px;padding:11px 5px}}
+</style>
+</head>
+<body>
+<header><h1>ශ්‍රී සුගත දායක තොරතුරු පද්ධතිය</h1><p>දුරකථන හා WhatsApp පහසුකම් පරීක්ෂණ පිටුව</p></header>
+<main>
+<div class="notice"><b>පරීක්ෂණය:</b> අංකය ඇතුළත් කර <b>ඇමතුම</b> ඔබන විට දුරකථනයේ ඇමතුම් තිරය විවෘත වේ. WhatsApp තිබේදැයි වෙබ් අඩවියකට පසුබිමෙන් ස්වයංක්‍රීයව තහවුරු කළ නොහැක. ඒ නිසා “WhatsApp පරීක්ෂා කරන්න” ඔබා WhatsApp විවෘත කර බලන්න. තිබෙන බව තහවුරු කළ පසු පමණක් එම අංකය අසල WhatsApp ලකුණ පෙන්වීමට තෝරන්න.</div>
+<nav id="menu"></nav>
+<div id="panels"></div>
+</main>
+<script>
+const names=['දායක තොරතුරු','දාන ලේඛනය','පොහොය දින දාන ලේඛනය','මුදල් හා භාණ්ඩ පරිත්‍යාග','ඡායාරූප හා වීඩියෝ','පෞද්ගලික ගොනුව','භාණ්ඩ ලේඛනය','වියදම් ලේඛනය','විහාරස්ථාන සංවර්ධන කටයුතු','විහාරස්ථාන දින දර්ශනය','නිවේදන හා දැනුම්දීම්','ලේඛන හා වාර්තා ගබඩාව','වාර්තා හා සාරාංශ','සාමණේර අවශ්‍යතා','භාණ්ඩ පරීක්ෂණ','බුද්ධ පූජා භාණ්ඩ'];
+const menu=document.getElementById('menu'), panels=document.getElementById('panels');
+names.forEach((name,i)=>{
+ const b=document.createElement('button');b.textContent=(i+1)+'. '+name;b.onclick=()=>show(i);menu.appendChild(b);
+ const p=document.createElement('section');p.className='panel'+(i===0?' active':'');p.id='p'+i;
+ p.innerHTML='<h2>'+(i+1)+'. '+name+'</h2>';
+ if(i<3){
+  p.innerHTML+=`<label>ඉඩම් අංකය</label><input placeholder="ඉඩම් අංකය"><label>නම</label><input placeholder="සම්පූර්ණ නම"><label>ප්‍රදේශය</label><input placeholder="ප්‍රදේශය">
+  <h3 style="font-size:16px;color:#145b3a;margin:18px 0 5px">දුරකථන අංක (අවශ්‍ය පරිදි 1–3ක්)</h3>
+  <div class="phones"></div><small>එක් අංකයක් හෝ අංක දෙකක් පමණක් ඇතුළත් කළත් ප්‍රමාණවත්ය.</small>`;
+  const wrap=p.querySelector('.phones');
+  for(let n=1;n<=3;n++){
+   const card=document.createElement('div');card.className='phone-card';
+   card.innerHTML=`<label>දුරකථන අංකය ${n}</label><div class="phone-row"><input type="tel" inputmode="tel" placeholder="07XXXXXXXX" aria-label="දුරකථන අංකය ${n}"></div><div class="actions"><a class="call" href="#" aria-label="ඇමතුම ගන්න">📞 ඇමතුම</a><button class="check" type="button">WhatsApp පරීක්ෂා කරන්න</button><span class="wa-slot"></span></div><div class="status">අංකය ඇතුළත් කළ පසු පරීක්ෂා කරන්න.</div>`;
+   const input=card.querySelector('input'), call=card.querySelector('.call'), check=card.querySelector('.check'), status=card.querySelector('.status'), slot=card.querySelector('.wa-slot');
+   const clean=()=>input.value.replace(/[^\d+]/g,'').replace(/^0/,'94').replace(/^\+/,'');
+   input.addEventListener('input',()=>{call.href=input.value.trim()?'tel:'+input.value.trim():'#';slot.innerHTML='';status.textContent='අංකය ඇතුළත් කළ පසු WhatsApp පරීක්ෂා කරන්න.';status.className='status'});
+   check.addEventListener('click',()=>{
+    const num=clean();
+    if(num.length<9){status.textContent='කරුණාකර නිවැරදි දුරකථන අංකයක් ඇතුළත් කරන්න.';status.className='status no';return;}
+    window.open('https://wa.me/'+num,'_blank');
+    status.textContent='WhatsApp විවෘත කළා. එහි මෙම අංකයට සංවාදයක් ආරම්භ කළ හැකිදැයි බලන්න. තිබේ නම් පහත තහවුරු කරන්න.';
+    status.className='status';
+    if(!card.querySelector('.confirm')){
+      const confirm=document.createElement('label');confirm.className='confirm';confirm.style.fontWeight='400';confirm.innerHTML='<input type="checkbox" style="width:auto;margin-right:7px"> මෙම අංකයට WhatsApp තිබෙන බව තහවුරු කළා';
+      card.appendChild(confirm);
+      confirm.querySelector('input').addEventListener('change',e=>{
+       slot.innerHTML=e.target.checked?'<a class="wa" target="_blank" rel="noopener" href="https://wa.me/'+num+'">🟢 WhatsApp</a>':'';
+       status.textContent=e.target.checked?'WhatsApp ලකුණ මෙම අංකය අසල පෙන්වයි.':'තහවුරු කිරීම ඉවත් කළා.';
+       status.className=e.target.checked?'status ok':'status';
+      });
+    }
+   });
+   wrap.appendChild(card);
+  }
+ } else if(i===3){
+  p.innerHTML+='<label>දායකයාගේ නම</label><input placeholder="නම"><label>දුරකථන අංකය</label><input type="tel" placeholder="07XXXXXXXX"><label>පරිත්‍යාග විස්තර</label><input placeholder="මුදල් / භාණ්ඩ විස්තර">';
+ } else {p.innerHTML+='<p>මෙම කොටස සම්පූර්ණ පද්ධතියේදී සකස් කරනු ලැබේ.</p>';}
+ panels.appendChild(p);
+});
+function show(i){document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('active',i===j));[...menu.children].forEach((b,j)=>b.classList.toggle('active',i===j));}
+show(0);
+</script>
+</body></html>
