@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="si">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ශ්‍රී සුගත දායක තොරතුරු පද්ධතිය</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f7f2;color:#183326;font-family:Arial,"Noto Sans Sinhala",sans-serif}
+header{background:linear-gradient(120deg,#104b35,#1d6847);color:#fff;text-align:center;padding:22px 12px}
+header h1{font-size:22px;margin:0 0 8px}header p{margin:4px;font-size:14px}
+main{max-width:900px;margin:auto;padding:14px}.notice{background:#fff5d9;border:1px solid #e6cc7a;border-radius:10px;padding:12px;margin-bottom:14px;font-size:13px;line-height:1.6}
+.menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.menu button{border:0;border-radius:12px;padding:15px 8px;min-height:70px;color:#fff;font-size:15px;font-weight:bold;background:#28634a;box-shadow:0 2px 5px #0002}
+.menu button:nth-child(4n+2){background:#9a6b19}.menu button:nth-child(4n+3){background:#356b82}.menu button:nth-child(4n){background:#76518a}
+.panel{display:none;background:#fff;margin-top:16px;padding:16px;border-radius:12px;box-shadow:0 2px 9px #0001}.panel.active{display:block}
+h2{font-size:19px;margin:0 0 14px;color:#17543b}label{display:block;font-size:14px;margin:10px 0 5px}
+input,textarea,select{width:100%;padding:11px;border:1px solid #cbd7ce;border-radius:8px;font-size:16px;background:#fff}
+textarea{min-height:70px}.phone-row{border:1px solid #dbe5dc;border-radius:10px;padding:10px;margin:12px 0;background:#f9fcf9}
+.phone-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.phone-actions a,.phone-actions button{border:0;border-radius:8px;padding:9px 12px;text-decoration:none;font-size:14px;background:#e8f2eb;color:#155337}
+.phone-actions button{background:#176b45;color:white}
+.status{font-size:13px;color:#456454;margin-top:7px}
+.confirm{display:none;align-items:center;gap:7px;font-size:13px;margin-top:9px}.confirm.show{display:flex}
+.confirm input{width:auto}.wa-icon{display:none;font-size:20px;text-decoration:none}.wa-icon.show{display:inline-block}
+.actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}.actions button{border:0;border-radius:8px;padding:11px 16px;background:#176b45;color:white;font-size:15px}.actions .secondary{background:#68766d}
+#saved{margin-top:12px;font-size:14px}
+@media(min-width:650px){.menu{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header><h1>ශ්‍රී සුගත දායක තොරතුරු පද්ධතිය</h1><p>ශ්‍රී සුගත විවේක සේනාසනය</p><p>කු.ග 05, දකුණු ඉවුර, මුවන් වැව, ලුණුගම්වෙහෙර.</p></header>
+<main>
+<div class="notice"><b>පරීක්ෂණ අනුවාදයයි.</b> මෙහි ඇතුළත් කරන දත්ත මෙම දුරකථනයේ බ්‍රවුසරයේ පමණක් තාවකාලිකව සුරැකේ. Firebase / මාර්ගගත දත්ත සමමුහුර්තකරණය සම්බන්ධ කර නැත.</div>
+<div class="menu" id="menu"></div>
+<section class="panel" id="panel">
+<h2 id="panelTitle"></h2>
+<div id="formArea"></div>
+<div class="actions"><button onclick="saveRecord()">සුරකින්න</button><button class="secondary" onclick="goHome()">මුල් පිටුවට</button></div>
+<div id="saved"></div>
+</section>
+</main>
+<script>
+const names=["දායක තොරතුරු","දාන ලේඛනය","පොහොය දින දාන ලේඛනය","මුදල් හා භාණ්ඩ පරිත්‍යාග","ඡායාරූප හා වීඩියෝ","පෞද්ගලික ගොනුව","භාණ්ඩ ලේඛනය","වියදම් ලේඛනය","විහාරස්ථාන සංවර්ධන කටයුතු","විහාරස්ථාන දින දර්ශනය","නිවේදන හා දැනුම්දීම්","ලේඛන හා වාර්තා ගබඩාව","වාර්තා හා සාරාංශ","සාමණේර අවශ්‍යතා","භාණ්ඩ පරීක්ෂණ","බුද්ධ පූජා භාණ්ඩ"];
+const menu=document.getElementById('menu');
+names.forEach((n,i)=>{let b=document.createElement('button');b.textContent=(i+1)+". "+n;b.onclick=()=>openPanel(i);menu.appendChild(b)});
+let current=0;
+function field(label,type='text',id=''){return `<label>${label}</label><input type="${type}" id="${id||'f'+Math.random().toString(36).slice(2)}">`}
+function phoneFields(){let out='<h3>දුරකථන අංක</h3>';for(let i=1;i<=3;i++){out+=`<div class="phone-row"><label>දුරකථන අංකය ${i} (අත්‍යවශ්‍ය නොවේ)</label><input type="tel" inputmode="tel" placeholder="දුරකථන අංකය ඇතුළත් කරන්න" id="phone${i}" oninput="phoneChanged(${i})"><div class="phone-actions"><a id="call${i}" href="#" style="display:none">📞 ඇමතුම ගන්න</a><button type="button" id="check${i}" style="display:none" onclick="checkWhatsApp(${i})">WhatsApp පරීක්ෂා කරන්න</button><a class="wa-icon" id="wa${i}" target="_blank" rel="noopener" href="#">🟢 WhatsApp</a></div><div class="status" id="status${i}"></div><label class="confirm" id="confirm${i}"><input type="checkbox" id="yes${i}" onchange="confirmWhatsApp(${i})"> පරීක්ෂා කළා — මෙම අංකයට WhatsApp තිබෙනවා</label></div>`}return out}
+function openPanel(i){current=i;document.getElementById('panel').classList.add('active');document.getElementById('panelTitle').textContent=(i+1)+'. '+names[i];let area=document.getElementById('formArea');document.getElementById('saved').textContent='';
+if(i===0) area=area; 
+if(i===0){area.innerHTML=field('ඉඩම් අංකය')+field('නම')+field('ලිපිනය')+field('ප්‍රදේශය')+phoneFields()}
+else if(i===1){area.innerHTML=field('ඉඩම් අංකය')+field('දායකයාගේ නම')+field('ලිපිනය')+field('ප්‍රදේශය')+field('දිනය','date')+'<label>දානය</label><select id="meal"><option>උදෑසන දානය</option><option>දහවල් දානය</option></select>'+field('සටහන')+phoneFields()}
+else if(i===2){area.innerHTML='<label>දාන වර්ගය</label><select id="kind"><option>පොහොය දින උදෑසන දානය</option><option>පොහොය දින දහවල් දානය</option><option>ගිලන්පස උදෑසන</option><option>ගිලන්පස සවස</option><option>ධර්ම දේශනා උදෑසන</option><option>ධර්ම දේශනා සවස</option></select>'+field('ඉඩම් අංකය')+field('නම')+field('ප්‍රදේශය')+field('දිනය','date')+field('සටහන')+phoneFields()}
+else if(i===3){area.innerHTML='<label>පරිත්‍යාග වර්ගය</label><select><option>මුදල්</option><option>භාණ්ඩ</option></select>'+field('දායකයාගේ නම')+field('දුරකථන අංකය','tel')+field('මුදල / භාණ්ඩ විස්තරය')+field('දිනය','date')+field('සටහන')}
+else {area.innerHTML='<p>මෙම කොටසේ සම්පූර්ණ විශේෂාංග ඊළඟ සංවර්ධන අදියරේදී එක් කරනු ලැබේ.</p>'}
+}
+function phoneChanged(i){let v=document.getElementById('phone'+i).value.trim();let valid=v.replace(/\D/g,'').length>=7;document.getElementById('call'+i).style.display=valid?'inline-block':'none';document.getElementById('call'+i).href=valid?'tel:'+v.replace(/[^\d+]/g,''):'#';document.getElementById('check'+i).style.display=valid?'inline-block':'none';document.getElementById('confirm'+i).classList.remove('show');document.getElementById('yes'+i).checked=false;document.getElementById('wa'+i).classList.remove('show');document.getElementById('status'+i).textContent=''}
+function waUrl(i){let digits=document.getElementById('phone'+i).value.replace(/\D/g,'');if(digits.startsWith('0'))digits='94'+digits.slice(1);else if(!digits.startsWith('94'))digits='94'+digits;return 'https://wa.me/'+digits}
+function checkWhatsApp(i){let v=document.getElementById('phone'+i).value.trim();if(v.replace(/\D/g,'').length<7)return;window.open(waUrl(i),'_blank');document.getElementById('confirm'+i).classList.add('show');document.getElementById('status'+i).textContent='WhatsApp විවෘත කළා. එහි ගිණුම තිබේදැයි පරීක්ෂා කර නැවත මෙහි තහවුරු කරන්න.'}
+function confirmWhatsApp(i){let yes=document.getElementById('yes'+i).checked;let a=document.getElementById('wa'+i);a.href=waUrl(i);a.classList.toggle('show',yes)}
+function saveRecord(){document.getElementById('saved').textContent='මෙය පරීක්ෂණ අනුවාදයක් බැවින් සුරැකීමේ/Cloud සම්බන්ධතාවය සීමිතයි.'}
+function goHome(){document.getElementById('panel').classList.remove('active');window.scrollTo({top:0,behavior:'smooth'})}
+</script>
+</body></html>
