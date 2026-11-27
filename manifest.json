@@ -1,0 +1,14 @@
+
+{
+  "name": "ශ්‍රී සුගත දායක තොරතුරු පද්ධතිය",
+  "short_name": "ශ්‍රී සුගත",
+  "description": "ශ්‍රී සුගත විවේක සේනාසනයේ දායක හා පින්කම් කළමනාකරණ පද්ධතිය",
+  "lang": "si",
+  "start_url": "./new-system.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f5f3e8",
+  "theme_color": "#12452c",
+  "icons": []
+}
