@@ -962,6 +962,78 @@ danaButton.addEventListener("click", function() {
   console.log('පොහොය දින පින්කම් වර්ග 6 සූදානම්:', poyaTypes);
 })();
 </script>
+
+<script>
+(function () {
+  function normalize(value) {
+    return String(value || '').trim().toLowerCase();
+  }
+
+  function findPoyaDonor(land) {
+    const donors = JSON.parse(
+      localStorage.getItem('sugathaDonors') || '[]'
+    );
+
+    return donors.find(function (d) {
+      return normalize(d.landNo) === normalize(land);
+    });
+  }
+
+  document.addEventListener('click', function (event) {
+    if (!event.target || event.target.id !== 'poyaFind') return;
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+
+    const land = document.getElementById('poyaLand').value;
+    const info = document.getElementById('poyaDonorInfo');
+
+    const donor = findPoyaDonor(land);
+
+    info.innerHTML = '';
+
+    if (!donor) {
+      info.textContent = 'දායක තොරතුරු හමු නොවීය';
+      return;
+    }
+
+    const name = document.createElement('p');
+    name.textContent = 'දායකයාගේ නම: ' + (donor.donorName || '');
+    info.appendChild(name);
+
+    ['phone1', 'phone2', 'phone3'].forEach(function (key) {
+      if (!donor[key]) return;
+
+      const phone = String(donor[key]).trim();
+
+      const call = document.createElement('a');
+      call.href = 'tel:' + phone;
+      call.textContent = '📞 ඇමතුමක් ගන්න - ' + phone;
+      call.style.display = 'block';
+      call.style.margin = '10px';
+
+      info.appendChild(call);
+
+      const whatsapp = document.createElement('a');
+      let number = phone.replace(/\D/g, '');
+
+      if (number.startsWith('0')) {
+        number = '94' + number.substring(1);
+      }
+
+      whatsapp.href = 'https://wa.me/' + number;
+      whatsapp.target = '_blank';
+      whatsapp.textContent = 'WhatsApp පණිවිඩයක් යවන්න';
+      whatsapp.style.display = 'block';
+      whatsapp.style.margin = '10px';
+
+      info.appendChild(whatsapp);
+    });
+
+  }, true);
+})();
+</script>
+
 </body>
 </html>
 
