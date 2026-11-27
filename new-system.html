@@ -196,4 +196,146 @@ document.querySelectorAll(".main-button").forEach((oldButton) => {
   });
 });
 </script>
+<script>
+const donorButtonOld = document.querySelectorAll(".main-button")[0];
+const donorButton = donorButtonOld.cloneNode(true);
+donorButtonOld.replaceWith(donorButton);
+
+donorButton.addEventListener("click", function() {
+  const main = document.querySelector(".main-container");
+  const grid = document.querySelector(".button-grid");
+  grid.style.display = "none";
+
+  const oldPage = document.getElementById("section-page");
+  if (oldPage) oldPage.remove();
+
+  const page = document.createElement("section");
+  page.id = "section-page";
+  page.style.cssText =
+    "background:#fff9e9;color:#073d2c;padding:16px;margin:15px 0;border-radius:15px;";
+
+  page.innerHTML = `
+    <h2>දායක තොරතුරු</h2>
+    <label>ඉඩම් අංකය</label>
+    <input id="landNo" style="width:100%;padding:12px;margin:6px 0 12px">
+    <label>නම</label>
+    <input id="donorName" style="width:100%;padding:12px;margin:6px 0 12px">
+    <label>ලිපිනය</label>
+    <textarea id="donorAddress" style="width:100%;padding:12px;margin:6px 0 12px"></textarea>
+    <label>ප්‍රදේශය</label>
+    <input id="donorArea" style="width:100%;padding:12px;margin:6px 0 12px">
+    <label>දුරකථන අංකය 1</label>
+    <input id="phone1" type="tel" style="width:100%;padding:12px;margin:6px 0 12px">
+    <label>දුරකථන අංකය 2</label>
+    <input id="phone2" type="tel" style="width:100%;padding:12px;margin:6px 0 12px">
+    <label>දුරකථන අංකය 3</label>
+    <input id="phone3" type="tel" style="width:100%;padding:12px;margin:6px 0 12px">
+    <button id="saveDonor" style="padding:12px;background:#075b3c;color:white;border:0;border-radius:8px">සුරකින්න</button>
+    <hr>
+    <h3>ඉඩම් අංකයෙන් සොයන්න</h3>
+    <input id="searchLand" placeholder="ඉඩම් අංකය ඇතුළත් කරන්න" style="width:100%;padding:12px;margin:6px 0">
+    <button id="searchDonor" style="padding:10px">සොයන්න</button>
+    <div id="donorResult"></div>
+    <button id="backDonor" style="padding:12px;margin-top:18px;background:#073d2c;color:white;border:0;border-radius:8px">මුල් පිටුවට</button>
+  `;
+
+  main.appendChild(page);
+
+  let editLand = "";
+
+  function getDonors() {
+    return JSON.parse(localStorage.getItem("sugathaDonors") || "[]");
+  }
+
+  function clearFields() {
+    ["landNo","donorName","donorAddress","donorArea","phone1","phone2","phone3"]
+      .forEach(id => document.getElementById(id).value = "");
+    editLand = "";
+  }
+
+  document.getElementById("saveDonor").onclick = function() {
+    const land = document.getElementById("landNo").value.trim();
+    const name = document.getElementById("donorName").value.trim();
+
+    if (!land || !name) {
+      alert("ඉඩම් අංකය සහ නම ඇතුළත් කරන්න.");
+      return;
+    }
+
+    let donors = getDonors();
+    const donor = {
+      land,
+      name,
+      address: document.getElementById("donorAddress").value,
+      area: document.getElementById("donorArea").value,
+      phones: [
+        document.getElementById("phone1").value,
+        document.getElementById("phone2").value,
+        document.getElementById("phone3").value
+      ]
+    };
+
+    if (editLand) {
+      donors = donors.map(d => d.land === editLand ? donor : d);
+    } else {
+      if (donors.some(d => d.land === land)) {
+        alert("මෙම ඉඩම් අංකය දැනටමත් ඇතුළත් කර ඇත.");
+        return;
+      }
+      donors.push(donor);
+    }
+
+    localStorage.setItem("sugathaDonors", JSON.stringify(donors));
+    alert("දායක තොරතුරු සුරැකුණා.");
+    clearFields();
+  };
+
+  document.getElementById("searchDonor").onclick = function() {
+    const land = document.getElementById("searchLand").value.trim();
+    const donor = getDonors().find(d => d.land === land);
+    const result = document.getElementById("donorResult");
+
+    if (!donor) {
+      result.textContent = "තොරතුරු හමු නොවීය.";
+      return;
+    }
+
+    result.innerHTML = `
+      <p><b>ඉඩම් අංකය:</b> ${donor.land}</p>
+      <p><b>නම:</b> ${donor.name}</p>
+      <p><b>ලිපිනය:</b> ${donor.address}</p>
+      <p><b>ප්‍රදේශය:</b> ${donor.area}</p>
+      <p><b>දුරකථන:</b> ${donor.phones.join(" / ")}</p>
+      <button id="editDonor">සංස්කරණය</button>
+      <button id="deleteDonor">මකා දමන්න</button>
+    `;
+
+    document.getElementById("editDonor").onclick = function() {
+      document.getElementById("landNo").value = donor.land;
+      document.getElementById("donorName").value = donor.name;
+      document.getElementById("donorAddress").value = donor.address;
+      document.getElementById("donorArea").value = donor.area;
+      ["phone1","phone2","phone3"].forEach((id,i) => {
+        document.getElementById(id).value = donor.phones[i] || "";
+      });
+      editLand = donor.land;
+      window.scrollTo(0,0);
+    };
+
+    document.getElementById("deleteDonor").onclick = function() {
+      if (confirm("මෙම දායක තොරතුරු මකා දමන්නද?")) {
+        localStorage.setItem("sugathaDonors",
+          JSON.stringify(getDonors().filter(d => d.land !== donor.land)));
+        result.textContent = "තොරතුරු මකා දැමුවා.";
+      }
+    };
+  };
+
+  document.getElementById("backDonor").onclick = function() {
+    page.remove();
+    grid.style.display = "grid";
+  };
+});
+</script>
+
 
