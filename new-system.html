@@ -801,8 +801,13 @@ function showDonor(d) {
 
     function findDonor(land) {
       const donors = JSON.parse(localStorage.getItem('sugathaDonors') || '[]');
-      return donors.find(d => String(d.landNo || '').trim().toLowerCase()
-        === String(land).trim().toLowerCase());
+      function findDonor(land) {
+  const donors = JSON.parse(localStorage.getItem('sugathaDonors') || '[]');
+  return donors.find(d =>
+    String(d.land || '').trim().toLowerCase() ===
+    String(land || '').trim().toLowerCase()
+  );
+}
     }
 
     function showDonor(d) {
@@ -814,9 +819,15 @@ function showDonor(d) {
       }
       info.innerHTML = '';
       const name = document.createElement('p');
-      name.textContent = 'දායකයා: ' + (d.donorName || '');
+      name.textContent = 'දායකයා: ' + (d.name || '');
       info.appendChild(name);
-      ['phone1', 'phone2', 'phone3'].forEach(key => {
+      (Array.isArray(d.phones) ? d.phones : []).filter(Boolean).forEach(phone => {
+  const link = document.createElement('a');
+  link.href = 'tel:' + phone;
+  link.textContent = '📞 ඇමතුම: ' + phone;
+  link.style.display = 'block';
+  info.appendChild(link);
+});
         if (d[key]) {
           const link = document.createElement('a');
           link.href = 'tel:' + d[key];
