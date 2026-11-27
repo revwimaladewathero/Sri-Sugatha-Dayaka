@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="si">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ශ්‍රී සුගත දායක තොරතුරු පද්ධතිය</title>
+<style>
+:root{--green:#123f32;--green2:#1d604a;--gold:#d8b45b;--paper:#fffdf7;--ink:#20332c;--muted:#64746d;--line:#dce5df}
+*{box-sizing:border-box}body{margin:0;background:#f1f5f1;color:var(--ink);font-family:system-ui,"Noto Sans Sinhala",sans-serif}
+header{background:linear-gradient(120deg,var(--green),#245c43);color:white;padding:18px 14px;text-align:center;border-bottom:4px solid var(--gold)}
+header h1{font-size:21px;margin:0 0 5px}header p{margin:0;font-size:13px;color:#f3e6bd}
+main{max-width:1050px;margin:auto;padding:14px}
+.panel{background:white;border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0;box-shadow:0 2px 9px #173c2910}
+.hidden{display:none!important}.muted{color:var(--muted);font-size:13px}.status{font-size:13px;padding:8px 10px;border-radius:8px;background:#edf5ef;margin:8px 0}
+input,select,textarea{width:100%;padding:11px;border:1px solid #cbd8cf;border-radius:9px;font:inherit;background:white;color:var(--ink)}
+label{display:block;font-size:13px;font-weight:650;margin:8px 0 5px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:9px}
+button{border:0;border-radius:10px;padding:11px 14px;font:inherit;font-weight:650;cursor:pointer}
+.primary{background:var(--green2);color:white}.gold{background:var(--gold);color:#24372d}.secondary{background:#e7f0eb;color:#214b3a}.danger{background:#fbe8e6;color:#8c2923}
+.menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.menu button{min-height:76px;color:white;text-align:left;display:flex;align-items:center;gap:9px;padding:12px;font-size:14px}
+.menu button span:first-child{font-size:23px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.toolbar input{flex:1;min-width:160px}
+.record{border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0;background:#fff}
+.record strong{display:block}.record small{color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{border-bottom:1px solid var(--line);padding:8px;text-align:left}
+.note{background:#fff8e6;border-left:4px solid var(--gold);padding:10px;border-radius:8px;font-size:13px}
+@media(max-width:420px){main{padding:9px}.panel{padding:12px}.menu button{font-size:12px;min-height:72px;padding:9px}}
+@media print{header,.noprint,#loginPanel,#homePanel,.actions,.toolbar,.menu{display:none!important}body{background:white}.panel{border:0;box-shadow:none}}
+</style>
+<script src="./firebase-config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<header>
+<h1>ශ්‍රී සුගත දායක තොරතුරු පද්ධතිය</h1>
+<p>ශ්‍රී සුගත විවේක සේනාසනය</p>
+</header>
+<main>
+<section id="loginPanel" class="panel">
+<h2>පරිපාලක පිවිසුම</h2>
+<p class="muted">පවතින Firebase Email/Password ගිණුම භාවිත කරන්න.</p>
+<form id="loginForm">
+<label>ඊමේල් ලිපිනය</label><input id="email" type="email" autocomplete="username" required>
+<label>මුරපදය</label><input id="password" type="password" autocomplete="current-password" required>
+<div class="actions"><button class="primary" type="submit">පිවිසෙන්න</button></div>
+</form><div id="loginMessage" class="status">Firebase සම්බන්ධතාව පරීක්ෂා කරමින්...</div>
+</section>
+
+<section id="appShell" class="hidden">
+<div class="panel toolbar noprint">
+<strong id="signedInLabel">පරිපාලක</strong><span id="cloudStatus" class="muted">Cloud සම්බන්ධතාව...</span>
+<button class="secondary" id="homeBtn">⌂ මුල් පිටුව</button><button class="danger" id="logoutBtn">පිටවෙන්න</button>
+</div>
+<section id="homePanel" class="panel">
+<h2>ප්‍රධාන මෙනුව</h2>
+<p class="muted">අවශ්‍ය අංගය තෝරන්න.</p>
+<div id="mainMenu" class="menu"></div>
+</section>
+<section id="modulePanel" class="panel hidden">
+<div class="toolbar noprint"><button class="secondary" id="backBtn">← ආපසු</button><button class="secondary" id="moduleHomeBtn">⌂ මුල් පිටුව</button></div>
+<h2 id="moduleTitle"></h2><p id="moduleIntro" class="muted"></p>
+<div id="subMenu" class="actions noprint"></div>
+<div id="formArea"></div>
+<div class="panel noprint">
+<h3>සුරැකි වාර්තා</h3>
+<div class="toolbar"><input id="searchBox" placeholder="නම / ඉඩම් අංකය / විස්තර සොයන්න"><button class="secondary" id="searchBtn">සොයන්න</button><button class="secondary" id="showAllBtn">සියල්ල</button></div>
+<div id="recordsList"></div>
+</div>
+</section>
+</section>
+<div class="note">සටහන: මෙම නව අනුවාදය නව Firestore එකතුවක් වන <b>sugatha16_records</b> භාවිත කරයි. පැරණි දායක දත්ත ස්වයංක්‍රීයව පිටපත් නොකරයි. ඡායාරූප/වීඩියෝ Cloud Storage, ඇඟිලි සලකුණු ආරක්ෂාව, SMS සහ උසස් වාර්තා සඳහා වෙනම ආරක්ෂිත සැකසුම් තවදුරටත් අවශ්‍ය වේ.</div>
+</main>
+<script>
+const modules = [
+{id:'donors',name:'දායක තොරතුරු',icon:'👥',color:'#28765b',intro:'දායකයාගේ මූලික තොරතුරු සහ සම්බන්ධතා අංක.',fields:[['land','ඉඩම් අංකය'],['name','දායකයාගේ නම'],['address','ලිපිනය'],['phone','ප්‍රධාන දුරකථන අංකය','tel'],['phone2','දෙවන දුරකථන අංකය','tel'],['phone3','තුන්වන දුරකථන අංකය','tel'],['phoneWhatsapp','1 වන අංකයට WhatsApp තිබේද?','checkbox'],['phone2Whatsapp','2 වන අංකයට WhatsApp තිබේද?','checkbox'],['phone3Whatsapp','3 වන අංකයට WhatsApp තිබේද?','checkbox'],['area','ප්‍රදේශය']]},
+{id:'dana',name:'දාන ලේඛනය',icon:'🍚',color:'#a46b22',intro:'දාන දින සහ දායක තොරතුරු සටහන් කරන්න.',fields:[['land','ඉඩම් අංකය'],['name','දායකයාගේ නම'],['address','ලිපිනය'],['area','ප්‍රදේශය'],['phone','ප්‍රධාන දුරකථන අංකය','tel'],['phone2','දෙවන දුරකථන අංකය','tel'],['phone3','තුන්වන දුරකථන අංකය','tel'],['phoneWhatsapp','1 වන අංකයට WhatsApp තිබේද?','checkbox'],['phone2Whatsapp','2 වන අංකයට WhatsApp තිබේද?','checkbox'],['phone3Whatsapp','3 වන අංකයට WhatsApp තිබේද?','checkbox'],['year','වර්ෂය','yearselect'],['month','මාසය','monthselect'],['day','දිනය','dayselect'],['danaType','දානය','select','උදෑසන දානය|දහවල් දානය'],['note','සටහන','textarea']]},
+{id:'poya',name:'පොහොය දින පින්කම්',icon:'🌕',color:'#7654a6',intro:'දානය, ගිලන්පස සහ ධර්ම දේශනා දායකත්වය.',fields:[['land','ඉඩම් අංකය'],['name','දායකයාගේ නම'],['area','ප්‍රදේශය'],['phone','ප්‍රධාන දුරකථන අංකය','tel'],['phone2','දෙවන දුරකථන අංකය','tel'],['phone3','තුන්වන දුරකථන අංකය','tel'],['phoneWhatsapp','1 වන අංකයට WhatsApp තිබේද?','checkbox'],['phone2Whatsapp','2 වන අංකයට WhatsApp තිබේද?','checkbox'],['phone3Whatsapp','3 වන අංකයට WhatsApp තිබේද?','checkbox'],['activity','පින්කම','select','පොහොය දින දානය - උදෑසන|පොහොය දින දානය - දහවල්|ගිලන්පස - උදෑසන|ගිලන්පස - සවස|ධර්ම දේශනාව - උදෑසන|ධර්ම දේශනාව - සවස'],['note','සටහන','textarea']]},
+{id:'aid',name:'ආධාර ලබාදීම',icon:'🤲',color:'#b36b32',intro:'මුදල් හා භාණ්ඩ ආධාර සටහන් කරන්න.',fields:[['aidType','ආධාර වර්ගය','select','මුදල් ලබාදීම|භාණ්ඩ ද්‍රව්‍ය ලබාදීම'],['land','ඉඩම් අංකය'],['name','දායකයාගේ නම'],['area','ප්‍රදේශය'],['phone','දුරකථන අංකය'],['amount','මුදල','number'],['item','භාණ්ඩය'],['quantity','ප්‍රමාණය','number'],['date','දිනය','date'],['note','සටහන','textarea']]},
+{id:'gallery',name:'ඡායාරූප හා වීඩියෝ ගැලරිය',icon:'🖼️',color:'#3d83a5',intro:'මාධ්‍ය ගොනු පිළිබඳ විස්තර සහ ෆෝල්ඩර් සටහන් කරන්න.',fields:[['mediaType','වර්ගය','select','ඡායාරූපය|වීඩියෝව'],['name','ගොනුවේ නම'],['folder','ෆෝල්ඩරය'],['date','දිනය','date'],['note','විස්තර','textarea']]},
+{id:'private',name:'මාගේ පෞද්ගලික ෆෝල්ඩරය',icon:'🔐',color:'#596777',intro:'පෞද්ගලික ලේඛන ලැයිස්තුව. ප්‍රවේශය ඔබගේ ගිණුමට සීමා වේ.',fields:[['category','වර්ගය','select','පෞද්ගලික තොරතුරු|ඡායාරූප|වීඩියෝ|බාගතකිරීම්|රහස් ලේඛන'],['name','ගොනුවේ / විස්තරයේ නම'],['date','දිනය','date'],['note','සටහන','textarea']]},
+{id:'inventory',name:'විහාරස්ථානයේ භාණ්ඩ හා උපකරණ',icon:'📦',color:'#6c8540',intro:'භාණ්ඩ, ප්‍රමාණය, තත්ත්වය සහ ස්ථානය සටහන් කරන්න.',fields:[['category','කාණ්ඩය','select','ශබ්ද උපකරණ|ආගමික හා පූජා භාණ්ඩ|පිඟන් කෝප්ප හා ආහාර භාණ්ඩ|මුළුතැන්ගෙයි උපකරණ|ගෘහ භාණ්ඩ|විදුලි හා ආලෝක උපකරණ|ඇඳුම් හා ඇඳ ඇතිරිලි|පිරිසිදු කිරීමේ උපකරණ|කාර්යාල හා තාක්ෂණික උපකරණ|ජල හා සනීපාරක්ෂක උපකරණ|ගෙවතු හා නඩත්තු උපකරණ|ආරක්ෂක උපකරණ'],['code','භාණ්ඩ සංකේතය'],['item','භාණ්ඩයේ නම'],['quantity','ප්‍රමාණය','number'],['date','ලැබුණු දිනය','date'],['source','ලැබුණු අයුරු / දායකයා'],['value','වටිනාකම','number'],['condition','තත්ත්වය','select','හොඳයි|අලුත්වැඩියා කළ යුතුයි|භාවිතයට නුසුදුසුයි'],['location','තබා ඇති ස්ථානය'],['note','සටහන','textarea']]},
+{id:'expenses',name:'වියදම් ලේඛනය',icon:'💰',color:'#a64d4d',intro:'වියදම් සහ ගෙවීම් සටහන් කරන්න.',fields:[['date','දිනය','date'],['category','වියදම් කාණ්ඩය'],['description','විස්තර'],['amount','මුදල','number'],['paidBy','ගෙවූ අය'],['method','ගෙවීමේ ක්‍රමය'],['note','සටහන','textarea']]},
+{id:'projects',name:'විහාරස්ථාන සංවර්ධන කටයුතු',icon:'🏗️',color:'#8b6b3c',intro:'සංවර්ධන ව්‍යාපෘති හා ප්‍රගතිය සටහන් කරන්න.',fields:[['project','ව්‍යාපෘතියේ නම'],['start','ආරම්භක දිනය','date'],['end','අවසන් දිනය','date'],['budget','ඇස්තමේන්තු මුදල','number'],['received','ලැබුණු මුදල','number'],['spent','වැය කළ මුදල','number'],['progress','ප්‍රගතිය'],['note','සටහන','textarea']]},
+{id:'calendar',name:'විහාරස්ථාන දින දර්ශනය',icon:'📅',color:'#397b91',intro:'පින්කම්, උත්සව සහ වැඩසටහන් සටහන් කරන්න.',fields:[['event','වැඩසටහනේ නම'],['category','වර්ගය','select','පොහොය වැඩසටහන|බුද්ධ පූජාව|ධර්ම දේශනාව|දානමය පින්කම|විශේෂ උත්සවය|මාසික වැඩසටහන'],['date','දිනය','date'],['time','වේලාව','time'],['place','ස්ථානය'],['details','විස්තර','textarea']]},
+{id:'notices',name:'නිවේදන හා දැනුම්දීම්',icon:'📢',color:'#8c5c9b',intro:'දැනුම්දීම් සහ නිවේදන සටහන් කරන්න.',fields:[['title','මාතෘකාව'],['date','දිනය','date'],['time','වේලාව','time'],['audience','දැනුම්දිය යුතු පිරිස'],['message','පණිවිඩය','textarea']]},
+{id:'documents',name:'ලේඛන හා වාර්තා ගබඩාව',icon:'🗂️',color:'#607d8b',intro:'ලේඛන නාමාවලිය සහ ෆෝල්ඩර් විස්තර සටහන් කරන්න.',fields:[['title','ලේඛනයේ නම'],['category','කාණ්ඩය'],['folder','ෆෝල්ඩරය'],['date','දිනය','date'],['description','විස්තර','textarea']]},
+{id:'reports',name:'සම්පූර්ණ වාර්තා හා සාරාංශය',icon:'📊',color:'#356b6b',intro:'මෙම පද්ධතියේ සටහන් කළ දත්ත සෙවීම සහ මුද්‍රණය.',fields:[['reportType','වාර්තා වර්ගය','select','දායක වාර්තා|දාන වාර්තා|ආධාර වාර්තා|වියදම් වාර්තා|භාණ්ඩ වාර්තා|සංවර්ධන වාර්තා'],['from','සිට දිනය','date'],['to','දක්වා දිනය','date'],['note','සටහන','textarea']]},
+{id:'novices',name:'සාමණේර ස්වාමීන් වහන්සේලාගේ අවශ්‍යතා',icon:'🙏',color:'#9a7840',intro:'අවශ්‍ය සහ ලැබුණු භාණ්ඩ පිළිබඳ සටහන්.',fields:[['monk','සාමණේර ස්වාමීන් වහන්සේගේ නම'],['category','අවශ්‍යතා කාණ්ඩය','select','සිවුරු හා පරිභෝජන ද්‍රව්‍ය|දානය හා ආහාර|නේවාසික පහසුකම්|අධ්‍යාපනය|පෞද්ගලික පරිහරණය|සෞඛ්‍ය|ගමන්බිමන්|වෙනත්'],['item','අවශ්‍ය භාණ්ඩය'],['needed','අවශ්‍ය ප්‍රමාණය','number'],['received','ලැබුණු ප්‍රමාණය','number'],['donor','දායකයා'],['note','සටහන','textarea']]},
+{id:'inspection',name:'තමන් සතුව ඇති භාණ්ඩ පරීක්ෂාව',icon:'📋',color:'#587b57',intro:'භාණ්ඩ පරීක්ෂාව සහ තත්ත්වය සටහන් කරන්න.',fields:[['monk','සාමණේර ස්වාමීන් වහන්සේගේ නම'],['date','පරීක්ෂා කළ දිනය','date'],['inspector','පරීක්ෂක'],['item','භාණ්ඩය'],['quantity','ප්‍රමාණය','number'],['condition','තත්ත්වය','select','හොඳයි|අලුත්වැඩියා කළ යුතුයි|භාවිතයට නුසුදුසුයි|අලුත් එකක් අවශ්‍යයි'],['note','සටහන','textarea']]},
+{id:'puja',name:'බුද්ධ පූජා භාණ්ඩ',icon:'🪷',color:'#a45d78',intro:'දිනපතා සහ විශේෂ පූජා භාණ්ඩ ලේඛනය.',fields:[['category','කාණ්ඩය','select','දිනපතා බුද්ධ පූජා භාණ්ඩ|විශේෂ පූජා උත්සව භාණ්ඩ'],['item','භාණ්ඩයේ නම'],['code','භාණ්ඩ සංකේතය'],['quantity','ප්‍රමාණය','number'],['date','ලැබුණු දිනය','date'],['donor','දායකයා'],['value','වටිනාකම','number'],['location','තබා ඇති ස්ථානය'],['condition','තත්ත්වය','select','හොඳයි|අලුත්වැඩියා කළ යුතුයි|භාවිතයට නුසුදුසුයි|අලුත් එකක් අවශ්‍යයි'],['note','සටහන','textarea']]}
+];
+let app,auth,db,user,allRecords=[],activeModule=null,editingId=null,unsubscribe=null;
+const $=id=>document.getElementById(id);
+function msg(t){$('loginMessage').textContent=t}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function initFirebase(){
+ if(!window.SUGATHA_FIREBASE_CONFIG?.apiKey) throw new Error('firebase-config.js හි සැකසුම් හමු නොවීය.');
+ if(!firebase.apps.length) firebase.initializeApp(window.SUGATHA_FIREBASE_CONFIG);
+ auth=firebase.auth();db=firebase.firestore();
+}
+function collection(){return db.collection('users').doc(user.uid).collection('sugatha16_records')}
+function buildMenu(){
+ $('mainMenu').innerHTML=modules.map((m,i)=>`<button style="background:${m.color}" data-mid="${m.id}"><span>${m.icon}</span><span>${i+1}. ${m.name}</span></button>`).join('');
+ $('mainMenu').querySelectorAll('button').forEach(b=>b.onclick=()=>openModule(b.dataset.mid));
+}
+function openModule(id){
+ activeModule=modules.find(m=>m.id===id);editingId=null;
+ $('homePanel').classList.add('hidden');$('modulePanel').classList.remove('hidden');
+ $('moduleTitle').textContent=activeModule.name;$('moduleIntro').textContent=activeModule.intro;
+ $('subMenu').innerHTML='';
+ renderForm();renderRecords();
+}
+function goHome(){$('modulePanel').classList.add('hidden');$('homePanel').classList.remove('hidden');activeModule=null}
+function renderForm(data={}){
+ const fields=activeModule.fields;
+ $('formArea').innerHTML=`<form id="dataForm" class="panel"><h3>${editingId?'වාර්තාව සංස්කරණය':'නව තොරතුරු ඇතුළත් කිරීම'}</h3><div class="grid">${fields.map(([key,label,type='text',opts=''])=>{
+ let control=type==='checkbox'?`<label style="display:flex;align-items:center;gap:9px;font-weight:500"><input id="f_${key}" type="checkbox" style="width:20px;height:20px"> ඔව්</label>`:type==='textarea'?`<textarea id="f_${key}" rows="3"></textarea>`:type==='select'?`<select id="f_${key}">${opts.split('|').map(o=>`<option>${esc(o)}</option>`).join('')}</select>`:type==='yearselect'?`<select id="f_${key}"><option value="">වර්ෂය තෝරන්න</option>${Array.from({length:101},(_,i)=>1950+i).map(y=>`<option value="${y}">${y}</option>`).join('')}</select>`:type==='monthselect'?`<select id="f_${key}"><option value="">මාසය තෝරන්න</option>${['ජනවාරි','පෙබරවාරි','මාර්තු','අප්‍රේල්','මැයි','ජූනි','ජූලි','අගෝස්තු','සැප්තැම්බර්','ඔක්තෝබර්','නොවැම්බර්','දෙසැම්බර්'].map((m,i)=>`<option value="${i+1}">${m}</option>`).join('')}</select>`:type==='dayselect'?`<select id="f_${key}"><option value="">දිනය තෝරන්න</option>${Array.from({length:31},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join('')}</select>`:type==='tel'?`<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><input id="f_${key}" type="tel" inputmode="tel" autocomplete="tel" style="flex:1;min-width:150px"><a id="call_${key}" href="tel:" aria-label="${esc(label)} අමතන්න" style="padding:9px 10px;border-radius:7px;background:#176b45;color:white;text-decoration:none;white-space:nowrap">📞 ${key==='phone'?'1':key==='phone2'?'2':'3'} අමතන්න</a></div>`:`<input id="f_${key}" type="${['number','date','time'].includes(type)?type:'text'}">`;
+ return `<div><label for="f_${key}">${esc(label)}</label>${control}</div>`;
+ }).join('')}</div><label>අමතර සටහන (අවශ්‍ය නම්)</label><textarea id="f_extra" rows="2"></textarea><div class="actions"><button class="primary" type="submit">සුරකින්න</button><button class="secondary" type="button" id="clearForm">හිස් කරන්න</button><button class="secondary" type="button" id="printModule">මුද්‍රණය</button></div></form>`;
+ fields.forEach(([key,label,type],i)=>{const el=$('f_'+key);if(el){if(type==='checkbox')el.checked=!!data[key];else el.value=data[key]??''}});
+ ['phone','phone2','phone3'].forEach(key=>{const input=$('f_'+key),link=$('call_'+key);if(input&&link){const update=()=>{const n=phoneUri(input.value);link.href=n?'tel:'+n:'tel:';link.style.opacity=n?'1':'.5';};input.addEventListener('input',update);update();}});
+ const yy=$('f_year'),mm=$('f_month'),dd=$('f_day');if(yy&&mm&&dd){const oldDay=dd.value;const refreshDays=()=>{const max=yy.value&&mm.value?new Date(Number(yy.value),Number(mm.value),0).getDate():31;const keep=dd.value||oldDay;dd.innerHTML='<option value="">දිනය තෝරන්න</option>'+Array.from({length:max},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join('');if(Number(keep)<=max)dd.value=keep;};yy.addEventListener('change',refreshDays);mm.addEventListener('change',refreshDays);refreshDays();}
+ $('f_extra').value=data.extra??'';
+ $('dataForm').onsubmit=saveRecord;$('clearForm').onclick=()=>{editingId=null;renderForm()};$('printModule').onclick=()=>window.print();
+}
+async function saveRecord(e){
+ e.preventDefault();const payload={module:activeModule.id,moduleName:activeModule.name,updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+ activeModule.fields.forEach(([key,label,type])=>payload[key]=type==='checkbox'?!!$('f_'+key)?.checked:($('f_'+key)?.value||''));payload.extra=$('f_extra').value||'';
+ try{
+  if(editingId) await collection().doc(editingId).set(payload,{merge:true});
+  else {payload.createdAt=firebase.firestore.FieldValue.serverTimestamp();await collection().add(payload)}
+  editingId=null;renderForm();$('cloudStatus').textContent='Cloud සමඟ සම්බන්ධයි — සුරැකුණා';renderRecords();
+ }catch(err){alert('දත්ත සුරැකීමට නොහැකි විය: '+err.message)}
+}
+function phoneDigits(value){return String(value||'').replace(/[^0-9]/g,'')}
+function phoneUri(value){return String(value||'').trim().replace(/[^0-9+]/g,'')}
+function whatsappDigits(value){
+ let n=phoneDigits(value);
+ if(n.startsWith('0')) n='94'+n.slice(1);
+ return n;
+}
+function contactActions(r){
+ const parts=[];
+ const rows=[['phone','1 වන අංකය','phoneWhatsapp'],['phone2','2 වන අංකය','phone2Whatsapp'],['phone3','3 වන අංකය','phone3Whatsapp']];
+ rows.forEach(([key,label,waKey])=>{
+  const raw=String(r[key]||'').trim(), uri=phoneUri(raw);
+  if(raw && uri){
+   const wa=whatsappDigits(raw);
+   parts.push(`<div style="margin:7px 0;padding:9px;background:#f4f7f5;border-radius:9px"><div><b>${label}:</b> <a href="tel:${esc(uri)}" style="font-size:17px;font-weight:700;color:#176b45;text-decoration:underline">${esc(raw)}</a></div><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:7px"><a href="tel:${esc(uri)}" aria-label="${label} අමතන්න" style="padding:7px 11px;border-radius:7px;background:#176b45;color:white;text-decoration:none">📞 ${key==='phone'?'1':key==='phone2'?'2':'3'} අමතන්න</a>${r[waKey]&&wa?`<a href="https://wa.me/${wa}" target="_blank" rel="noopener" style="padding:7px 11px;border-radius:7px;background:#16834a;color:white;text-decoration:none">🟢 WhatsApp</a>`:''}</div></div>`);
+  }
+ });
+ if(waRaw && wa) parts.push(`<div style="margin:7px 0;padding:9px;background:#f4f7f5;border-radius:9px"><b>වෙනම WhatsApp අංකය:</b> ${esc(waRaw)} <a href="https://wa.me/${wa}" target="_blank" rel="noopener" style="display:inline-block;margin:6px;padding:7px 11px;border-radius:7px;background:#16834a;color:white;text-decoration:none">🟢 WhatsApp විවෘත කරන්න</a></div>`);
+ return parts.length?`<div style="margin:8px 0">${parts.join('')}</div>`:'';
+}
+function renderRecords(query=''){
+ const list=allRecords.filter(r=>r.module===activeModule?.id);
+ const q=query.trim().toLowerCase();
+ const filtered=q?list.filter(r=>Object.values(r).some(v=>String(v??'').toLowerCase().includes(q))):list;
+ $('recordsList').innerHTML=filtered.length?filtered.map(r=>{
+  const first=activeModule.fields.map(([k,l])=>r[k]?`${l}: ${r[k]}`:null).filter(Boolean).slice(0,4).join(' • ');
+  return `<div class="record"><strong>${esc(r.name||r.item||r.title||r.event||r.project||r.monk||r.description||activeModule.name)}</strong><small>${esc(first)}</small>${contactActions(r)}<div class="actions"><button class="secondary" data-edit="${r.id}">සංස්කරණය</button><button class="danger" data-del="${r.id}">මකන්න</button></div></div>`;
+ }).join(''):'<p class="muted">තවම වාර්තා නැත.</p>';
+ $('recordsList').querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>{const r=allRecords.find(x=>x.id===b.dataset.edit);editingId=r.id;renderForm(r);window.scrollTo({top:0,behavior:'smooth'})});
+ $('recordsList').querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(confirm('මෙම වාර්තාව මකන්නද?'))try{await collection().doc(b.dataset.del).delete()}catch(e){alert(e.message)}});
+}
+function startSync(){
+ if(unsubscribe)unsubscribe();
+ unsubscribe=collection().onSnapshot(s=>{allRecords=s.docs.map(d=>({id:d.id,...d.data()}));$('cloudStatus').textContent='Cloud සමඟ සම්බන්ධයි';if(activeModule)renderRecords($('searchBox').value)},e=>{$('cloudStatus').textContent='Cloud දෝෂය: '+e.message});
+}
+$('loginForm').addEventListener('submit',async e=>{e.preventDefault();try{await auth.signInWithEmailAndPassword($('email').value.trim(),$('password').value);msg('පිවිසෙමින්...')}catch(err){msg('පිවිසීමට නොහැකි විය: '+err.message)}});
+$('logoutBtn').onclick=()=>auth.signOut();$('homeBtn').onclick=goHome;$('moduleHomeBtn').onclick=goHome;$('backBtn').onclick=goHome;
+$('searchBtn').onclick=()=>renderRecords($('searchBox').value);$('showAllBtn').onclick=()=>{$('searchBox').value='';renderRecords()};
+try{initFirebase();auth.onAuthStateChanged(u=>{user=u;if(u){$('loginPanel').classList.add('hidden');$('appShell').classList.remove('hidden');$('signedInLabel').textContent='පිවිසී ඇත: '+u.email;buildMenu();startSync()}else{$('loginPanel').classList.remove('hidden');$('appShell').classList.add('hidden');if(unsubscribe)unsubscribe();msg('පරිපාලක ගිණුමෙන් පිවිසෙන්න.')}})}catch(e){msg('Firebase සැකසුම් දෝෂය: '+e.message)}
+</script>
+</body>
+</html>
