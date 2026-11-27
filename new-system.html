@@ -371,3 +371,413 @@
   });
 })();
 </script>
+<script>
+(function () {
+  const oldButton = document.querySelectorAll(".main-button")[1];
+  if (!oldButton) return;
+
+  const danaButton = oldButton.cloneNode(true);
+  oldButton.replaceWith(danaButton);
+
+  danaButton.addEventListener("click", function () {
+    const main = document.querySelector(".main-container");
+    const grid = document.querySelector(".button-grid");
+
+    if (!main || !grid) return;
+
+    const oldPage = document.getElementById("section-page");
+    if (oldPage) oldPage.remove();
+
+    grid.style.display = "none";
+
+    const page = document.createElement("section");
+    page.id = "section-page";
+    page.style.cssText =
+      "background:#fff9e9;color:#073d2c;padding:16px;margin:15px 0;border-radius:15px;text-align:left;";
+
+    page.innerHTML = `
+      <style>
+        #section-page label {
+          display:block;
+          font-weight:bold;
+          margin-top:12px;
+        }
+        #section-page input,
+        #section-page select,
+        #section-page textarea {
+          width:100%;
+          padding:12px;
+          margin-top:5px;
+          border:1px solid #b9a36c;
+          border-radius:8px;
+          font-size:16px;
+          box-sizing:border-box;
+        }
+        #section-page button {
+          padding:11px 14px;
+          margin:5px 3px;
+          border:0;
+          border-radius:8px;
+          font-weight:bold;
+          cursor:pointer;
+        }
+        #section-page .save-btn {
+          background:#075b3c;color:white;
+        }
+        #section-page .other-btn {
+          background:#d8b45b;color:#073d2c;
+        }
+        #section-page .danger-btn {
+          background:#a83232;color:white;
+        }
+        #section-page .dana-card {
+          background:white;
+          border:1px solid #d8b45b;
+          border-radius:10px;
+          padding:12px;
+          margin-top:12px;
+          overflow-wrap:anywhere;
+        }
+        #section-page a {
+          color:#075b3c;
+          display:inline-block;
+          margin:5px;
+        }
+      </style>
+
+      <h2 style="text-align:center">දාන ලේඛනය</h2>
+
+      <label>දානය පැවැත්වෙන දිනය *</label>
+      <input type="date" id="danaDate">
+
+      <label>දානය පැවැත්වෙන වේලාව *</label>
+      <select id="danaTime">
+        <option value="උදෑසන දානය">උදෑසන දානය</option>
+        <option value="දහවල් දානය">දහවල් දානය</option>
+      </select>
+
+      <label>දායකයාගේ ඉඩම් අංකය *</label>
+      <input id="danaLand" type="text"
+        placeholder="ඉඩම් අංකය">
+
+      <button class="other-btn" id="findDanaDonor">
+        දායකයා සොයන්න
+      </button>
+
+      <div id="danaDonorInfo" class="dana-card">
+        දායකයා තවම තෝරා නැත.
+      </div>
+
+      <label>විශේෂ සටහන්</label>
+      <textarea id="danaNote" rows="3"
+        placeholder="අමතර විස්තර ඇතුළත් කරන්න"></textarea>
+
+      <div style="margin-top:15px">
+        <button class="save-btn" id="saveDana">
+          සේව් කරන්න
+        </button>
+        <button class="other-btn" id="clearDana">
+          හිස් කරන්න
+        </button>
+      </div>
+
+      <hr>
+
+      <h3>ඉඩම් අංකයෙන් දාන ලේඛනය සොයන්න</h3>
+      <input id="searchDanaLand" type="text"
+        placeholder="ඉඩම් අංකය ඇතුළත් කරන්න">
+
+      <button class="other-btn" id="searchDana">
+        සොයන්න
+      </button>
+
+      <div id="danaResults"></div>
+
+      <button class="other-btn" id="backDana"
+        style="background:#073d2c;color:white;width:100%;margin-top:18px">
+        මුල් පිටුවට
+      </button>
+    `;
+
+    main.appendChild(page);
+
+    let editId = null;
+
+    function field(id) {
+      return page.querySelector("#" + id);
+    }
+
+    function normalize(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function getDonors() {
+      try {
+        const data = JSON.parse(
+          localStorage.getItem("sugathaDonors") || "[]"
+        );
+        return Array.isArray(data) ? data : [];
+      } catch (error) {
+        alert("දායක දත්ත කියවීමේ දෝෂයක් ඇත.");
+        return [];
+      }
+    }
+
+    function getRecords() {
+      try {
+        const data = JSON.parse(
+          localStorage.getItem("sugathaDana") || "[]"
+        );
+        return Array.isArray(data) ? data : [];
+      } catch (error) {
+        alert("දාන වාර්තා කියවීමේ දෝෂයක් ඇත.");
+        return [];
+      }
+    }
+
+    function saveRecords(records) {
+      try {
+        localStorage.setItem(
+          "sugathaDana",
+          JSON.stringify(records)
+        );
+        return true;
+      } catch (error) {
+        alert("දත්ත සුරැකීමට නොහැකි වුණා.");
+        return false;
+      }
+    }
+
+    function findDonor(land) {
+      return getDonors().find(d =>
+        normalize(d.land) === normalize(land)
+      );
+    }
+
+    function showDonor(donor) {
+      const info = field("danaDonorInfo");
+      info.replaceChildren();
+
+      if (!donor) {
+        info.textContent = "දායක තොරතුරු හමු නොවීය.";
+        return;
+      }
+
+      const name = document.createElement("p");
+      name.textContent = "දායකයාගේ නම: " + (donor.name || "-");
+      info.appendChild(name);
+
+      const land = document.createElement("p");
+      land.textContent = "ඉඩම් අංකය: " + (donor.land || "-");
+      info.appendChild(land);
+
+      (Array.isArray(donor.phones) ? donor.phones : [])
+        .filter(Boolean)
+        .forEach(phone => {
+          const row = document.createElement("p");
+
+          const call = document.createElement("a");
+          call.href = "tel:" + phone;
+          call.textContent = "ඇමතුම: " + phone;
+          row.appendChild(call);
+
+          let number = String(phone).replace(/\D/g, "");
+          if (number.startsWith("0")) {
+            number = "94" + number.substring(1);
+          }
+
+          if (number) {
+            const wa = document.createElement("a");
+            wa.href = "https://wa.me/" + number;
+            wa.target = "_blank";
+            wa.rel = "noopener";
+            wa.textContent = "WhatsApp";
+            row.appendChild(wa);
+          }
+
+          info.appendChild(row);
+        });
+    }
+
+    function clearDana() {
+      field("danaDate").value = "";
+      field("danaTime").value = "උදෑසන දානය";
+      field("danaLand").value = "";
+      field("danaNote").value = "";
+
+      field("danaDonorInfo").textContent =
+        "දායකයා තවම තෝරා නැත.";
+
+      editId = null;
+      field("saveDana").textContent = "සේව් කරන්න";
+    }
+
+    function findDonorClick() {
+      const land = field("danaLand").value.trim();
+
+      if (!land) {
+        alert("ඉඩම් අංකය ඇතුළත් කරන්න.");
+        return;
+      }
+
+      const donor = findDonor(land);
+      showDonor(donor);
+
+      if (!donor) {
+        alert("දායක තොරතුරු හමු නොවීය. පළමුව පළමු බොත්තමෙන් දායකයා ඇතුළත් කරන්න.");
+      }
+    }
+
+    function saveDana() {
+      const date = field("danaDate").value;
+      const land = field("danaLand").value.trim();
+      const time = field("danaTime").value;
+      const note = field("danaNote").value.trim();
+
+      if (!date || !land) {
+        alert("දිනය සහ ඉඩම් අංකය ඇතුළත් කරන්න.");
+        return;
+      }
+
+      const donor = findDonor(land);
+
+      if (!donor) {
+        alert("මෙම ඉඩම් අංකයට දායකයෙකු හමු නොවීය.");
+        return;
+      }
+
+      let records = getRecords();
+
+      const duplicate = records.some(r =>
+        normalize(r.land) === normalize(land) &&
+        r.date === date &&
+        r.time === time &&
+        String(r.id) !== String(editId)
+      );
+
+      if (duplicate) {
+        alert("මෙම දිනයේ මෙම වේලාවට දානයක් දැනටමත් සටහන් කර ඇත.");
+        return;
+      }
+
+      const record = {
+        id: editId !== null
+          ? editId
+          : String(Date.now()) + "-" + records.length,
+        date: date,
+        time: time,
+        land: land,
+        name: donor.name || "",
+        note: note
+      };
+
+      if (editId !== null) {
+        records = records.map(r =>
+          String(r.id) === String(editId) ? record : r
+        );
+      } else {
+        records.push(record);
+      }
+
+      if (!saveRecords(records)) return;
+
+      alert(editId !== null
+        ? "දාන තොරතුරු යාවත්කාලීන කළා."
+        : "දාන තොරතුරු සුරැකුණා.");
+
+      clearDana();
+    }
+
+    function searchDana() {
+      const land = field("searchDanaLand").value.trim();
+      const results = field("danaResults");
+
+      results.replaceChildren();
+
+      if (!land) {
+        results.textContent =
+          "සෙවීමට ඉඩම් අංකය ඇතුළත් කරන්න.";
+        return;
+      }
+
+      const found = getRecords()
+        .filter(r => normalize(r.land) === normalize(land))
+        .sort((a, b) =>
+          String(a.date).localeCompare(String(b.date))
+        );
+
+      if (!found.length) {
+        results.textContent = "දාන තොරතුරු හමු නොවීය.";
+        return;
+      }
+
+      found.forEach(record => {
+        const card = document.createElement("div");
+        card.className = "dana-card";
+
+        const info = document.createElement("p");
+        info.textContent =
+          "දිනය: " + record.date +
+          " | වේලාව: " + record.time +
+          " | ඉඩම් අංකය: " + record.land +
+          " | නම: " + (record.name || "") +
+          " | සටහන: " + (record.note || "");
+
+        card.appendChild(info);
+
+        const edit = document.createElement("button");
+        edit.className = "other-btn";
+        edit.textContent = "එඩිට් කරන්න";
+
+        edit.onclick = function () {
+          field("danaDate").value = record.date || "";
+          field("danaTime").value = record.time || "උදෑසන දානය";
+          field("danaLand").value = record.land || "";
+          field("danaNote").value = record.note || "";
+
+          editId = record.id;
+          showDonor(findDonor(record.land));
+
+          field("saveDana").textContent = "යාවත්කාලීන කරන්න";
+          window.scrollTo(0, 0);
+        };
+
+        card.appendChild(edit);
+
+        const remove = document.createElement("button");
+        remove.className = "danger-btn";
+        remove.textContent = "මකා දමන්න";
+
+        remove.onclick = function () {
+          if (!confirm("මෙම දාන වාර්තාව මකා දමන්නද?")) return;
+
+          const remaining = getRecords().filter(r =>
+            String(r.id) !== String(record.id)
+          );
+
+          if (saveRecords(remaining)) {
+            searchDana();
+          }
+        };
+
+        card.appendChild(remove);
+        results.appendChild(card);
+      });
+    }
+
+    field("findDanaDonor").onclick = findDonorClick;
+    field("saveDana").onclick = saveDana;
+    field("clearDana").onclick = clearDana;
+    field("searchDana").onclick = searchDana;
+
+    field("searchDanaLand").addEventListener("keydown", function (event) {
+      if (event.key === "Enter") searchDana();
+    });
+
+    field("backDana").onclick = function () {
+      page.remove();
+      grid.style.display = "grid";
+    };
+  });
+})();
+</script>
