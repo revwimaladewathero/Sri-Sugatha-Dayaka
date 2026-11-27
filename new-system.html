@@ -1,167 +1,14 @@
- 
-<!DOCTYPE html>
-<html lang="si">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ශ්‍රී සුගත දායක තොරතුරු පද්ධතිය</title>
-<style>
-* {
-  box-sizing: border-box;
-}
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #073d2c;
-  color: #ffffff;
-}
-header {
-  text-align: center;
-  padding: 25px 10px;
-  background: linear-gradient(135deg,#063323,#16704b);
-  border-bottom: 4px solid #d8b45b;
-}
-header h1 {
-  font-size: 24px;
-  margin: 5px;
-}
-header p {
-  margin: 5px;
-  color: #f5df9c;
-}
-</style>
-</head>
-<body>
-
-<header>
-<h1>ශ්‍රී සුගත දායක තොරතුරු පද්ධතිය</h1>
-<p>ශ්‍රී සුගත විවේක සේනාසනය</p>
-<p>කු.ග 05, දකුණු ඉවුර, මුවන් වැව, ලුණුගම්වෙහෙර</p>
-</header>
-</body>
-</html>
-<style>
-.main-container {
-  max-width: 900px;
-  margin: 25px auto;
-  padding: 12px;
-}
-.button-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-.main-button {
-  min-height: 90px;
-  padding: 12px;
-  border: 2px solid #d8b45b;
-  border-radius: 15px;
-  background: linear-gradient(145deg,#fff4ce,#d8b45b);
-  color: #073d2c;
-  font-size: 15px;
-  font-weight: bold;
-  cursor: pointer;
-}
-.main-button:active {
-  transform: scale(0.97);
-}
-@media(max-width:400px) {
-  .main-button {
-    font-size: 13px;
-  }
-}
-</style>
-
-<main class="main-container">
-<div class="button-grid">
-
-<button class="main-button">01. දායක තොරතුරු</button>
-<button class="main-button">02. දාන ලේඛනය</button>
-<button class="main-button">03. පොහොය දින දාන ලේඛනය</button>
-<button class="main-button">04. මුදල් හා භාණ්ඩ පරිත්‍යාග</button>
-<button class="main-button">05. ඡායාරූප හා වීඩියෝ</button>
-<button class="main-button">06. පෞද්ගලික ගොනුව</button>
-<button class="main-button">07. භාණ්ඩ ලේඛනය</button>
-<button class="main-button">08. වියදම් ලේඛනය</button>
-<button class="main-button">09. විහාරස්ථාන සංවර්ධන කටයුතු</button>
-<button class="main-button">10. විහාරස්ථාන දින දර්ශනය</button>
-<button class="main-button">11. නිවේදන හා දැනුම්දීම්</button>
-<button class="main-button">12. ලේඛන හා වාර්තා ගබඩාව</button>
-<button class="main-button">13. වාර්තා හා සාරාංශ</button>
-<button class="main-button">14. සාමණේර අවශ්‍යතා</button>
-<button class="main-button">15. භාණ්ඩ පරීක්ෂණ</button>
-<button class="main-button">16. බුද්ධ පූජා භාණ්ඩ</button>
-<button class="main-button">17. පින්කම් භාණ්ඩ නිකුත් කිරීම හා භාරගැනීම</button>
-
-</div>
-</main>
 <script>
-const sectionNames = [
-"දායක තොරතුරු",
-"දාන ලේඛනය",
-"පොහොය දින දාන ලේඛනය",
-"මුදල් හා භාණ්ඩ පරිත්‍යාග",
-"ඡායාරූප හා වීඩියෝ",
-"පෞද්ගලික ගොනුව",
-"භාණ්ඩ ලේඛනය",
-"වියදම් ලේඛනය",
-"විහාරස්ථාන සංවර්ධන කටයුතු",
-"විහාරස්ථාන දින දර්ශනය",
-"නිවේදන හා දැනුම්දීම්",
-"ලේඛන හා වාර්තා ගබඩාව",
-"වාර්තා හා සාරාංශ",
-"සාමණේර අවශ්‍යතා",
-"භාණ්ඩ පරීක්ෂණ",
-"බුද්ධ පූජා භාණ්ඩ",
-"පින්කම් භාණ්ඩ නිකුත් කිරීම හා භාරගැනීම"
-];
+(function () {
+  const donorButtonOld = document.querySelectorAll(".main-button")[0];
+  if (!donorButtonOld) return;
 
-const buttons = document.querySelectorAll(".main-button");
+  const donorButton = donorButtonOld.cloneNode(true);
+  donorButtonOld.replaceWith(donorButton);
 
-buttons.forEach((button, index) => {
-  button.addEventListener("click", function() {
-    const oldPage = document.getElementById("section-page");
-    if (oldPage) oldPage.remove();
-
-    document.querySelector(".main-container").style.display = "none";
-
-    const page = document.createElement("section");
-    page.id = "section-page";
-    page.style.cssText =
-      "background:#fff9e9;color:#073d2c;padding:20px;margin:20px 12px;border-radius:15px;text-align:center;";
-
-    const title = document.createElement("h2");
-    title.textContent = sectionNames[index];
-
-    const message = document.createElement("p");
-    message.textContent =
-      "මෙම කොටස සඳහා අවශ්‍ය පහසුකම් සකස් කරමින් පවතී.";
-
-    const back = document.createElement("button");
-    back.textContent = "මුල් පිටුවට";
-    back.style.cssText =
-      "padding:12px 22px;background:#073d2c;color:white;border:0;border-radius:9px;font-size:16px;";
-    back.onclick = function() {
-      page.remove();
-      document.querySelector(".main-container").style.display = "block";
-    };
-
-    page.appendChild(title);
-    page.appendChild(message);
-    page.appendChild(back);
-    document.querySelector("main").appendChild(page);
-  });
-});
-</script>
-<script>
-document.querySelectorAll(".main-button").forEach((oldButton) => {
-  const button = oldButton.cloneNode(true);
-  oldButton.replaceWith(button);
-
-  button.addEventListener("click", function() {
+  donorButton.addEventListener("click", function () {
     const main = document.querySelector(".main-container");
     const grid = document.querySelector(".button-grid");
-
     const oldPage = document.getElementById("section-page");
     if (oldPage) oldPage.remove();
 
@@ -170,918 +17,357 @@ document.querySelectorAll(".main-button").forEach((oldButton) => {
     const page = document.createElement("section");
     page.id = "section-page";
     page.style.cssText =
-      "background:#fff9e9;color:#073d2c;padding:20px;margin:20px 0;border-radius:15px;text-align:center;";
+      "background:#fff9e9;color:#073d2c;padding:16px;margin:15px 0;border-radius:15px;text-align:left;";
 
-    const title = document.createElement("h2");
-    title.textContent = button.textContent;
+    page.innerHTML = `
+      <style>
+        #section-page label {
+          display:block;
+          font-weight:bold;
+          margin-top:12px;
+        }
+        #section-page input,
+        #section-page textarea,
+        #section-page select {
+          width:100%;
+          padding:12px;
+          margin-top:5px;
+          border:1px solid #b9a36c;
+          border-radius:8px;
+          font-size:16px;
+          box-sizing:border-box;
+        }
+        #section-page button {
+          padding:11px 14px;
+          margin:5px 3px;
+          border:0;
+          border-radius:8px;
+          font-weight:bold;
+          cursor:pointer;
+        }
+        #section-page .save-btn {
+          background:#075b3c;color:white;
+        }
+        #section-page .other-btn {
+          background:#d8b45b;color:#073d2c;
+        }
+        #section-page .danger-btn {
+          background:#a83232;color:white;
+        }
+        #section-page .donor-card {
+          background:white;
+          border:1px solid #d8b45b;
+          border-radius:10px;
+          padding:12px;
+          margin-top:12px;
+          overflow-wrap:anywhere;
+        }
+        #section-page a {
+          color:#075b3c;
+          display:inline-block;
+          margin:5px;
+        }
+      </style>
 
-    const message = document.createElement("p");
-    message.textContent =
-      "මෙම කොටස සඳහා අවශ්‍ය පහසුකම් සකස් කරමින් පවතී.";
+      <h2 style="text-align:center">දායක තොරතුරු</h2>
 
-    const back = document.createElement("button");
-    back.textContent = "මුල් පිටුවට";
-    back.style.cssText =
-      "padding:12px 22px;background:#073d2c;color:white;border:0;border-radius:9px;font-size:16px;";
+      <p id="donorCount">දායකයන් ගණන: 0</p>
 
-    back.onclick = function() {
-      page.remove();
-      grid.style.display = "grid";
-    };
+      <label>ඉඩම් අංකය *</label>
+      <input id="donorLand" type="text" placeholder="ඉඩම් අංකය">
 
-    page.appendChild(title);
-    page.appendChild(message);
-    page.appendChild(back);
+      <label>දායකයාගේ සම්පූර්ණ නම *</label>
+      <input id="donorName" type="text" placeholder="නම">
+
+      <label>ලිපිනය</label>
+      <textarea id="donorAddress" rows="2" placeholder="ලිපිනය"></textarea>
+
+      <label>ප්‍රදේශය</label>
+      <input id="donorArea" type="text" placeholder="ප්‍රදේශය ඇතුළත් කරන්න">
+
+      <label>පටුමඟ</label>
+      <select id="donorLane">
+        <option value="">පටුමඟ තෝරන්න</option>
+        <option value="පළමු පටුමඟ">පළමු පටුමඟ</option>
+        <option value="දෙවැනි පටුමඟ">දෙවැනි පටුමඟ</option>
+        <option value="තුන්වැනි පටුමඟ">තුන්වැනි පටුමඟ</option>
+        <option value="හතරවැනි පටුමඟ">හතරවැනි පටුමඟ</option>
+        <option value="පස්වැනි පටුමඟ">පස්වැනි පටුමඟ</option>
+      </select>
+
+      <label>පළමු දුරකථන අංකය</label>
+      <input id="donorPhone1" type="tel" placeholder="දුරකථන අංකය">
+
+      <label>දෙවැනි දුරකථන අංකය</label>
+      <input id="donorPhone2" type="tel" placeholder="දුරකථන අංකය">
+
+      <label>තුන්වැනි දුරකථන අංකය</label>
+      <input id="donorPhone3" type="tel" placeholder="දුරකථන අංකය">
+
+      <label>විශේෂ සටහන්</label>
+      <textarea id="donorNote" rows="3" placeholder="සටහන්"></textarea>
+
+      <div style="margin-top:15px">
+        <button class="save-btn" id="saveDonor">සේව් කරන්න</button>
+        <button class="other-btn" id="clearDonor">හිස් කරන්න</button>
+      </div>
+
+      <hr>
+
+      <h3>ඉඩම් අංකයෙන් දායකයා සොයන්න</h3>
+      <input id="searchLand" placeholder="ඉඩම් අංකය ඇතුළත් කරන්න">
+      <button class="other-btn" id="searchDonor">සොයන්න</button>
+
+      <div id="donorResult"></div>
+
+      <hr>
+      <h3>දායක ලැයිස්තුව</h3>
+      <div id="donorList"></div>
+
+      <button class="other-btn" id="backDonor"
+        style="background:#073d2c;color:white;width:100%;margin-top:18px">
+        මුල් පිටුවට
+      </button>
+    `;
+
     main.appendChild(page);
-  });
-});
-</script>
-<script>
-const donorButtonOld = document.querySelectorAll(".main-button")[0];
-const donorButton = donorButtonOld.cloneNode(true);
-donorButtonOld.replaceWith(donorButton);
 
-donorButton.addEventListener("click", function() {
-  const main = document.querySelector(".main-container");
-  const grid = document.querySelector(".button-grid");
-  grid.style.display = "none";
+    let editLand = "";
 
-  const oldPage = document.getElementById("section-page");
-  if (oldPage) oldPage.remove();
-
-  const page = document.createElement("section");
-  page.id = "section-page";
-  page.style.cssText =
-    "background:#fff9e9;color:#073d2c;padding:16px;margin:15px 0;border-radius:15px;";
-
-  page.innerHTML = `
-    <h2>දායක තොරතුරු</h2>
-    <label>ඉඩම් අංකය</label>
-    <input id="landNo" style="width:100%;padding:12px;margin:6px 0 12px">
-    <label>නම</label>
-    <input id="donorName" style="width:100%;padding:12px;margin:6px 0 12px">
-    <label>ලිපිනය</label>
-    <textarea id="donorAddress" style="width:100%;padding:12px;margin:6px 0 12px"></textarea>
-    <label>ප්‍රදේශය</label>
-    <input id="donorArea" style="width:100%;padding:12px;margin:6px 0 12px">
-    <label>දුරකථන අංකය 1</label>
-    <input id="phone1" type="tel" style="width:100%;padding:12px;margin:6px 0 12px">
-    <label>දුරකථන අංකය 2</label>
-    <input id="phone2" type="tel" style="width:100%;padding:12px;margin:6px 0 12px">
-    <label>දුරකථන අංකය 3</label>
-    <input id="phone3" type="tel" style="width:100%;padding:12px;margin:6px 0 12px">
-    <button id="saveDonor" style="padding:12px;background:#075b3c;color:white;border:0;border-radius:8px">සුරකින්න</button>
-    <hr>
-    <h3>ඉඩම් අංකයෙන් සොයන්න</h3>
-    <input id="searchLand" placeholder="ඉඩම් අංකය ඇතුළත් කරන්න" style="width:100%;padding:12px;margin:6px 0">
-    <button id="searchDonor" style="padding:10px">සොයන්න</button>
-    <div id="donorResult"></div>
-    <button id="backDonor" style="padding:12px;margin-top:18px;background:#073d2c;color:white;border:0;border-radius:8px">මුල් පිටුවට</button>
-  `;
-
-  main.appendChild(page);
-
-  let editLand = "";
-
-  function getDonors() {
-    return JSON.parse(localStorage.getItem("sugathaDonors") || "[]");
-  }
-
-  function clearFields() {
-    ["landNo","donorName","donorAddress","donorArea","phone1","phone2","phone3"]
-      .forEach(id => document.getElementById(id).value = "");
-    editLand = "";
-  }
-
-  document.getElementById("saveDonor").onclick = function() {
-    const land = document.getElementById("landNo").value.trim();
-    const name = document.getElementById("donorName").value.trim();
-
-    if (!land || !name) {
-      alert("ඉඩම් අංකය සහ නම ඇතුළත් කරන්න.");
-      return;
+    function getDonors() {
+      try {
+        const data = JSON.parse(
+          localStorage.getItem("sugathaDonors") || "[]"
+        );
+        return Array.isArray(data) ? data : [];
+      } catch (error) {
+        alert("දායක දත්ත කියවීමේ දෝෂයක් ඇත.");
+        return [];
+      }
     }
 
-    let donors = getDonors();
-    const donor = {
-      land,
-      name,
-      address: document.getElementById("donorAddress").value,
-      area: document.getElementById("donorArea").value,
-      phones: [
-        document.getElementById("phone1").value,
-        document.getElementById("phone2").value,
-        document.getElementById("phone3").value
-      ]
-    };
+    function normalize(value) {
+      return String(value || "").trim().toLowerCase();
+    }
 
-    if (editLand) {
-      donors = donors.map(d => d.land === editLand ? donor : d);
-    } else {
-      if (donors.some(d => d.land === land)) {
+    function field(id) {
+      return document.getElementById(id);
+    }
+
+    function clearFields() {
+      [
+        "donorLand", "donorName", "donorAddress",
+        "donorArea", "donorPhone1", "donorPhone2",
+        "donorPhone3", "donorNote"
+      ].forEach(id => field(id).value = "");
+
+      field("donorLane").value = "";
+      editLand = "";
+      field("saveDonor").textContent = "සේව් කරන්න";
+    }
+
+    function updateCount() {
+      field("donorCount").textContent =
+        "දායකයන් ගණන: " + getDonors().length;
+    }
+
+    function renderList() {
+      const list = field("donorList");
+      list.replaceChildren();
+
+      getDonors().forEach(donor => {
+        const item = document.createElement("div");
+        item.className = "donor-card";
+
+        const info = document.createElement("p");
+        info.textContent =
+          "ඉඩම් අංකය: " + donor.land + " | නම: " + donor.name;
+
+        const view = document.createElement("button");
+        view.className = "other-btn";
+        view.textContent = "විස්තර බලන්න";
+        view.onclick = function () {
+          field("searchLand").value = donor.land;
+          showDonor(donor.land);
+        };
+
+        item.append(info, view);
+        list.appendChild(item);
+      });
+
+      updateCount();
+    }
+
+    function saveDonor() {
+      const land = field("donorLand").value.trim();
+      const name = field("donorName").value.trim();
+
+      if (!land || !name) {
+        alert("ඉඩම් අංකය සහ නම අනිවාර්යයෙන් ඇතුළත් කරන්න.");
+        return;
+      }
+
+      let donors = getDonors();
+
+      const duplicate = donors.some(d =>
+        normalize(d.land) === normalize(land) &&
+        normalize(d.land) !== normalize(editLand)
+      );
+
+      if (duplicate) {
         alert("මෙම ඉඩම් අංකය දැනටමත් ඇතුළත් කර ඇත.");
         return;
       }
-      donors.push(donor);
-    }
 
-    localStorage.setItem("sugathaDonors", JSON.stringify(donors));
-    alert("දායක තොරතුරු සුරැකුණා.");
-    clearFields();
-  };
-
-  document.getElementById("searchDonor").onclick = function() {
-    const land = document.getElementById("searchLand").value.trim();
-    const donor = getDonors().find(d => d.land === land);
-    const result = document.getElementById("donorResult");
-
-    if (!donor) {
-      result.textContent = "තොරතුරු හමු නොවීය.";
-      return;
-    }
-
-    result.innerHTML = `
-      <p><b>ඉඩම් අංකය:</b> ${donor.land}</p>
-      <p><b>නම:</b> ${donor.name}</p>
-      <p><b>ලිපිනය:</b> ${donor.address}</p>
-      <p><b>ප්‍රදේශය:</b> ${donor.area}</p>
-      <p><b>දුරකථන:</b> ${donor.phones.join(" / ")}</p>
-      <button id="editDonor">සංස්කරණය</button>
-      <button id="deleteDonor">මකා දමන්න</button>
-    `;
-
-    document.getElementById("editDonor").onclick = function() {
-      document.getElementById("landNo").value = donor.land;
-      document.getElementById("donorName").value = donor.name;
-      document.getElementById("donorAddress").value = donor.address;
-      document.getElementById("donorArea").value = donor.area;
-      ["phone1","phone2","phone3"].forEach((id,i) => {
-        document.getElementById(id).value = donor.phones[i] || "";
-      });
-      editLand = donor.land;
-      window.scrollTo(0,0);
-    };
-
-    document.getElementById("deleteDonor").onclick = function() {
-      if (confirm("මෙම දායක තොරතුරු මකා දමන්නද?")) {
-        localStorage.setItem("sugathaDonors",
-          JSON.stringify(getDonors().filter(d => d.land !== donor.land)));
-        result.textContent = "තොරතුරු මකා දැමුවා.";
-      }
-    };
-  };
-
-  document.getElementById("backDonor").onclick = function() {
-    page.remove();
-    grid.style.display = "grid";
-  };
-});
-</script>
-<script>
-const danaOldButton = document.querySelectorAll(".main-button")[1];
-const danaButton = danaOldButton.cloneNode(true);
-danaOldButton.replaceWith(danaButton);
-
-danaButton.addEventListener("click", function() {
-  const main = document.querySelector(".main-container");
-  const grid = document.querySelector(".button-grid");
-  const oldPage = document.getElementById("section-page");
-  if (oldPage) oldPage.remove();
-
-  grid.style.display = "none";
-
-  const page = document.createElement("section");
-  page.id = "section-page";
-  page.style.cssText =
-    "background:#fff9e9;color:#073d2c;padding:16px;margin:15px 0;border-radius:15px;";
-
-  page.innerHTML = `
-    <h2>දාන ලේඛනය</h2>
-
-    <label>දානය පැවැත්වෙන දිනය</label>
-    <input type="date" id="danaDate"
-      style="width:100%;padding:12px;margin:8px 0 15px">
-
-    <label>දානය පැවැත්වෙන වේලාව</label>
-    <select id="danaTime"
-      style="width:100%;padding:12px;margin:8px 0 15px">
-      <option value="උදෑසන">උදෑසන දානය</option>
-      <option value="දහවල්">දහවල් දානය</option>
-    </select>
-
-    <label>දායකයාගේ ඉඩම් අංකය</label>
-    <input id="danaLand" placeholder="ඉඩම් අංකය"
-      style="width:100%;padding:12px;margin:8px 0">
-
-    <button id="findDanaDonor"
-      style="padding:10px;margin-bottom:12px">දායකයා සොයන්න</button>
-
-    <p id="danaDonorName">දායකයාගේ නම: තවම තෝරා නැත</p>
-    <div id="danaPhones"></div>
-
-    <label>සටහන</label>
-    <textarea id="danaNote"
-      style="width:100%;padding:12px;margin:8px 0 15px"></textarea>
-
-    <button id="saveDana"
-      style="padding:12px;background:#075b3c;color:white;border:0;border-radius:8px">
-      දාන තොරතුරු සුරකින්න
-    </button>
-
-    <hr>
-    <h3>ඉඩම් අංකයෙන් දාන ලේඛනය සොයන්න</h3>
-    <input id="searchDanaLand" placeholder="ඉඩම් අංකය"
-      style="width:100%;padding:12px;margin:8px 0">
-    <button id="searchDana"
-      style="padding:10px">සොයන්න</button>
-    <div id="danaResults"></div>
-
-    <button id="backDana"
-      style="padding:12px;margin-top:18px;background:#073d2c;color:white;border:0;border-radius:8px">
-      මුල් පිටුවට
-    </button>
-  `;
-
-  main.appendChild(page);
-
-  let selectedDonor = null;
-
-  function getDonors() {
-    return JSON.parse(localStorage.getItem("sugathaDonors") || "[]");
-  }
-
-  function getDanaRecords() {
-    return JSON.parse(localStorage.getItem("sugathaDana") || "[]");
-  }
-
-  document.getElementById("findDanaDonor").onclick = function() {
-    const land = document.getElementById("danaLand").value.trim();
-    selectedDonor = getDonors().find(d => d.land === land);
-
-    const name = document.getElementById("danaDonorName");
-    const phones = document.getElementById("danaPhones");
-    phones.replaceChildren();
-
-    if (!selectedDonor) {
-      name.textContent = "දායක තොරතුරු හමු නොවීය.";
-      return;
-    }
-
-    name.textContent = "දායකයාගේ නම: " + selectedDonor.name;
-
-    (selectedDonor.phones || []).filter(Boolean).forEach(phone => {
-      const link = document.createElement("a");
-      link.href = "tel:" + phone;
-      link.textContent = "දුරකථන ඇමතුම: " + phone;
-      link.style.display = "block";
-      phones.appendChild(link);
-    });
-  };
-
-  document.getElementById("saveDana").onclick = function() {
-    const date = document.getElementById("danaDate").value;
-    const land = document.getElementById("danaLand").value.trim();
-    const time = document.getElementById("danaTime").value;
-
-    if (!date || !land) {
-      alert("දිනය සහ ඉඩම් අංකය ඇතුළත් කරන්න.");
-      return;
-    }
-
-    const donor = getDonors().find(d => d.land === land);
-    if (!donor) {
-      alert("පළමුව දායක තොරතුරු කොටසට දායකයා ඇතුළත් කරන්න.");
-      return;
-    }
-
-    const records = getDanaRecords();
-    records.push({
-      date,
-      time,
-      land,
-      name: donor.name,
-      note: document.getElementById("danaNote").value
-    });
-
-    localStorage.setItem("sugathaDana", JSON.stringify(records));
-
-    alert("දාන තොරතුරු සුරැකුණා.");
-    document.getElementById("danaDate").value = "";
-    document.getElementById("danaLand").value = "";
-    document.getElementById("danaNote").value = "";
-    document.getElementById("danaDonorName").textContent =
-      "දායකයාගේ නම: තවම තෝරා නැත";
-    document.getElementById("danaPhones").replaceChildren();
-    selectedDonor = null;
-  };
-
-  document.getElementById("searchDana").onclick = function() {
-    const land = document.getElementById("searchDanaLand").value.trim();
-    const records = getDanaRecords().filter(r => r.land === land);
-    const results = document.getElementById("danaResults");
-    results.replaceChildren();
-
-    if (!records.length) {
-      results.textContent = "දාන තොරතුරු හමු නොවීය.";
-      return;
-    }
-
-    records.forEach(record => {
-      const item = document.createElement("p");
-      item.textContent =
-        record.date + " | " + record.time + " | " +
-        record.name + " | " + record.note;
-      results.appendChild(item);
-    });
-  };
-
-  document.getElementById("backDana").onclick = function() {
-    page.remove();
-    grid.style.display = "grid";
-  };
-});
-</script>
-<script>
-(function() {
-  const oldButton = document.querySelectorAll(".main-button")[1];
-  const newButton = oldButton.cloneNode(true);
-  oldButton.replaceWith(newButton);
-
-  newButton.addEventListener("click", function() {
-    const main = document.querySelector(".main-container");
-    const grid = document.querySelector(".button-grid");
-    const oldPage = document.getElementById("section-page");
-    if (oldPage) oldPage.remove();
-
-    grid.style.display = "none";
-
-    const page = document.createElement("section");
-    page.id = "section-page";
-    page.style.cssText =
-      "background:#fff9e9;color:#073d2c;padding:16px;margin:15px 0;border-radius:15px;";
-
-    page.innerHTML = `
-      <h2>දාන ලේඛනය</h2>
-      <label>දානය පැවැත්වෙන දිනය</label>
-      <input type="date" id="dDate" style="width:100%;padding:12px;margin:8px 0">
-
-      <label>දානය පැවැත්වෙන වේලාව</label>
-      <select id="dTime" style="width:100%;padding:12px;margin:8px 0">
-        <option>උදෑසන දානය</option>
-        <option>දහවල් දානය</option>
-      </select>
-
-      <label>දායකයාගේ ඉඩම් අංකය</label>
-      <input id="dLand" placeholder="ඉඩම් අංකය" style="width:100%;padding:12px;margin:8px 0">
-      <button id="dFind">දායකයා සොයන්න</button>
-
-      <p id="dName">දායකයාගේ නම: තවම තෝරා නැත</p>
-      <div id="dPhones"></div>
-
-      <label>සටහන</label>
-      <textarea id="dNote" style="width:100%;padding:12px;margin:8px 0"></textarea>
-
-      <button id="dSave" style="padding:12px;background:#075b3c;color:white;border:0;border-radius:8px">සුරකින්න</button>
-
-      <hr>
-      <h3>දාන ලේඛනය සොයන්න</h3>
-      <input id="dSearch" placeholder="ඉඩම් අංකය" style="width:100%;padding:12px;margin:8px 0">
-      <button id="dSearchBtn">සොයන්න</button>
-      <div id="dResults"></div>
-
-      <button id="dBack" style="padding:12px;margin-top:18px;background:#073d2c;color:white;border:0;border-radius:8px">මුල් පිටුවට</button>
-    `;
-
-    main.appendChild(page);
-
-    let selectedDonor = null;
-    let editId = null;
-
-    function donors() {
-      return JSON.parse(localStorage.getItem("sugathaDonors") || "[]");
-    }
-
-    function records() {
-      return JSON.parse(localStorage.getItem("sugathaDana") || "[]");
-    }
-
-    function showDonor() {
-      const land = document.getElementById("dLand").value.trim();
-      selectedDonor = donors().find(d => d.land === land);
-
-      const name = document.getElementById("dName");
-      const phones = document.getElementById("dPhones");
-      phones.replaceChildren();
-
-      if (!selectedDonor) {
-        name.textContent = "දායක තොරතුරු හමු නොවීය.";
-        return;
-      }
-
-      name.textContent = "දායකයාගේ නම: " + selectedDonor.name;
-
-      (selectedDonor.phones || []).filter(Boolean).forEach(phone => {
-        const link = document.createElement("a");
-        link.href = "tel:" + phone;
-        link.textContent = "ඇමතුම: " + phone;
-        link.style.display = "block";
-        phones.appendChild(link);
-      });
-    }
-
-    document.getElementById("dFind").onclick = showDonor;
-
-    document.getElementById("dSave").onclick = function() {
-      const date = document.getElementById("dDate").value;
-      const land = document.getElementById("dLand").value.trim();
-
-      if (!date || !land) {
-        alert("දිනය සහ ඉඩම් අංකය ඇතුළත් කරන්න.");
-        return;
-      }
-
-      const donor = donors().find(d => d.land === land);
-      if (!donor) {
-        alert("දායක තොරතුරු හමු නොවීය. පළමුව දායකයා ඇතුළත් කරන්න.");
-        return;
-      }
-
-      let list = records();
-
-      const record = {
-        id: editId || Date.now(),
-        date: date,
-        time: document.getElementById("dTime").value,
+      const donor = {
         land: land,
-        name: donor.name,
-        note: document.getElementById("dNote").value
+        name: name,
+        address: field("donorAddress").value.trim(),
+        area: field("donorArea").value.trim(),
+        lane: field("donorLane").value,
+        phones: [
+          field("donorPhone1").value.trim(),
+          field("donorPhone2").value.trim(),
+          field("donorPhone3").value.trim()
+        ],
+        note: field("donorNote").value.trim()
       };
 
-      if (editId) {
-        list = list.map(r => r.id === editId ? record : r);
+      if (editLand) {
+        donors = donors.map(d =>
+          normalize(d.land) === normalize(editLand) ? donor : d
+        );
       } else {
-        list.push(record);
+        donors.push(donor);
       }
 
-      localStorage.setItem("sugathaDana", JSON.stringify(list));
-      alert("දාන තොරතුරු සුරැකුණා.");
+      try {
+        localStorage.setItem("sugathaDonors", JSON.stringify(donors));
+        alert(editLand ? "දායක තොරතුරු යාවත්කාලීන කළා." :
+          "දායක තොරතුරු සුරැකුණා.");
+        clearFields();
+        renderList();
+      } catch (error) {
+        alert("දත්ත සුරැකීමට නොහැකි වුණා. දුරකථනයේ ගබඩා ඉඩ පරීක්ෂා කරන්න.");
+      }
+    }
 
-      editId = null;
-      document.getElementById("dDate").value = "";
-      document.getElementById("dLand").value = "";
-      document.getElementById("dNote").value = "";
-      document.getElementById("dName").textContent =
-        "දායකයාගේ නම: තවම තෝරා නැත";
-      document.getElementById("dPhones").replaceChildren();
-      selectedDonor = null;
-    };
+    function showDonor(land) {
+      const donor = getDonors().find(d =>
+        normalize(d.land) === normalize(land)
+      );
 
-    document.getElementById("dSearchBtn").onclick = function() {
-      const land = document.getElementById("dSearch").value.trim();
-      const found = records().filter(r => r.land === land);
-      const results = document.getElementById("dResults");
-      results.replaceChildren();
+      const result = field("donorResult");
+      result.replaceChildren();
 
-      if (!found.length) {
-        results.textContent = "දාන තොරතුරු හමු නොවීය.";
+      if (!donor) {
+        result.textContent = "දායක තොරතුරු හමු නොවීය.";
         return;
       }
 
-      found.forEach(record => {
-        const item = document.createElement("div");
-        item.style.cssText = "padding:12px;margin:10px 0;border:1px solid #b99b50;border-radius:8px;";
+      const card = document.createElement("div");
+      card.className = "donor-card";
 
-        const info = document.createElement("p");
-        info.textContent = record.date + " | " + record.time +
-          " | " + record.name + " | " + record.note;
-        item.appendChild(info);
+      function addLine(label, value) {
+        const p = document.createElement("p");
+        p.textContent = label + ": " + (value || "-");
+        card.appendChild(p);
+      }
 
-        const edit = document.createElement("button");
-        edit.textContent = "සංස්කරණය";
-        edit.onclick = function() {
-          document.getElementById("dDate").value = record.date;
-          document.getElementById("dTime").value = record.time;
-          document.getElementById("dLand").value = record.land;
-          document.getElementById("dNote").value = record.note;
-          editId = record.id;
-          showDonor();
-          window.scrollTo(0, 0);
-        };
-        item.appendChild(edit);
+      addLine("ඉඩම් අංකය", donor.land);
+      addLine("නම", donor.name);
+      addLine("ලිපිනය", donor.address);
+      addLine("ප්‍රදේශය", donor.area);
+      addLine("පටුමඟ", donor.lane);
+      addLine("විශේෂ සටහන්", donor.note);
 
-        const del = document.createElement("button");
-        del.textContent = "මකා දමන්න";
-        del.style.marginLeft = "8px";
-        del.onclick = function() {
-          if (confirm("මෙම දාන වාර්තාව මකා දමන්නද?")) {
-            localStorage.setItem("sugathaDana",
-              JSON.stringify(records().filter(r => r.id !== record.id)));
-            item.remove();
-          }
-        };
-        item.appendChild(del);
-        results.appendChild(item);
+      (donor.phones || []).filter(Boolean).forEach(phone => {
+        const row = document.createElement("p");
+        const call = document.createElement("a");
+        call.href = "tel:" + phone;
+        call.textContent = "ඇමතුම: " + phone;
+        row.appendChild(call);
+
+        const digits = phone.replace(/\D/g, "");
+        let whatsappNumber = digits;
+        if (whatsappNumber.startsWith("0")) {
+          whatsappNumber = "94" + whatsappNumber.substring(1);
+        }
+
+        if (whatsappNumber) {
+          const wa = document.createElement("a");
+          wa.href = "https://wa.me/" + whatsappNumber;
+          wa.target = "_blank";
+          wa.rel = "noopener";
+          wa.textContent = "WhatsApp";
+          row.appendChild(wa);
+        }
+        card.appendChild(row);
       });
+
+      const edit = document.createElement("button");
+      edit.className = "other-btn";
+      edit.textContent = "එඩිට් කරන්න";
+      edit.onclick = function () {
+        field("donorLand").value = donor.land || "";
+        field("donorName").value = donor.name || "";
+        field("donorAddress").value = donor.address || "";
+        field("donorArea").value = donor.area || "";
+        field("donorLane").value = donor.lane || "";
+        field("donorNote").value = donor.note || "";
+
+        const phones = donor.phones || [];
+        field("donorPhone1").value = phones[0] || "";
+        field("donorPhone2").value = phones[1] || "";
+        field("donorPhone3").value = phones[2] || "";
+
+        editLand = donor.land;
+        field("saveDonor").textContent = "යාවත්කාලීන කරන්න";
+        window.scrollTo(0, 0);
+      };
+
+      const remove = document.createElement("button");
+      remove.className = "danger-btn";
+      remove.textContent = "මකා දමන්න";
+      remove.onclick = function () {
+        if (!confirm("මෙම දායක තොරතුරු මකා දමන්නද?")) return;
+
+        const remaining = getDonors().filter(d =>
+          normalize(d.land) !== normalize(donor.land)
+        );
+
+        localStorage.setItem("sugathaDonors", JSON.stringify(remaining));
+        result.textContent = "දායක තොරතුරු මකා දැමුවා.";
+        clearFields();
+        renderList();
+      };
+
+      card.append(edit, remove);
+      result.appendChild(card);
+    }
+
+    field("saveDonor").onclick = saveDonor;
+    field("clearDonor").onclick = clearFields;
+
+    field("searchDonor").onclick = function () {
+      const land = field("searchLand").value.trim();
+      if (!land) {
+        alert("සෙවීමට ඉඩම් අංකය ඇතුළත් කරන්න.");
+        return;
+      }
+      showDonor(land);
     };
 
-    document.getElementById("dBack").onclick = function() {
+    field("searchLand").addEventListener("keydown", function (event) {
+      if (event.key === "Enter") field("searchDonor").click();
+    });
+
+    field("backDonor").onclick = function () {
       page.remove();
       grid.style.display = "grid";
     };
+
+    renderList();
   });
 })();
 </script>
-<script>
-(function () {
-  const buttons = document.querySelectorAll('.main-button');
-  const original = buttons[2];
-  if (!original) return;
-
-  const btn = original.cloneNode(true);
-  function findDonor(land) {
-  const donors = JSON.parse(localStorage.getItem('sugathaDonors') || '[]');
-
-  return donors.find(d =>
-    String(d.land || '').trim().toLowerCase() ===
-    String(land || '').trim().toLowerCase()
-  );
-}
-
-function showDonor(d) {
-  donor = d;
-
-  const info = document.getElementById('poyaDonorInfo');
-  info.innerHTML = '';
-
-  if (!d) {
-    info.textContent = 'දායක තොරතුරු හමු නොවීය';
-    return;
-  }
-
-  const name = document.createElement('p');
-  name.textContent = 'දායකයා: ' + (d.name || '');
-  info.appendChild(name);
-
-  (Array.isArray(d.phones) ? d.phones : []).filter(Boolean).forEach(phone => {
-    const call = document.createElement('a');
-    call.href = 'tel:' + phone;
-    call.textContent = '📞 ඇමතුම: ' + phone;
-    call.style.display = 'block';
-    info.appendChild(call);
-
-    const number = String(phone).replace(/\D/g, '');
-    const waNumber = number.startsWith('0')
-      ? '94' + number.slice(1)
-      : number;
-
-    const wa = document.createElement('a');
-    wa.href = 'https://wa.me/' + waNumber;
-    wa.target = '_blank';
-    wa.textContent = 'WhatsApp පණිවිඩයක් යවන්න';
-    wa.style.display = 'block';
-    info.appendChild(wa);
-  });
-}
-
-  btn.addEventListener('click', function () {
-    const container = document.querySelector('.main-container');
-    const grid = document.querySelector('.button-grid');
-    if (!container || !grid) return;
-
-    grid.style.display = 'none';
-
-    let records = JSON.parse(localStorage.getItem('sugathaPoya') || '[]');
-
-    container.insertAdjacentHTML('beforeend', `
-      <section id="poyaPage">
-        <h2>03. පොහොය දින දාන ලේඛනය</h2>
-        <p>ශ්‍රී සුගත විවේක සේනාසනය</p>
-
-        <label>පොහොය දිනය</label>
-        <input type="date" id="poyaDate">
-
-        <label>දාන / පින්කම් වර්ගය</label>
-        <select id="poyaType">
-          <option value="පොහොය උදෑසන දානය">පොහොය උදෑසන දානය</option>
-          <option value="පොහොය දහවල් දානය">පොහොය දහවල් දානය</option>
-          <option value="ගිලන්පස උදෑසන">ගිලන්පස උදෑසන</option>
-          <option value="ගිලන්පස සවස">ගිලන්පස සවස</option>
-          <option value="ධර්ම දේශනා උදෑසන">ධර්ම දේශනා උදෑසන</option>
-          <option value="ධර්ම දේශනා සවස">ධර්ම දේශනා සවස</option>
-        </select>
-
-        <label>දායක ඉඩම් අංකය</label>
-        <input id="poyaLand" placeholder="ඉඩම් අංකය ඇතුළත් කරන්න">
-        <button type="button" id="poyaFind">දායකයා සොයන්න</button>
-
-        <div id="poyaDonorInfo"></div>
-
-        <label>විස්තර</label>
-        <textarea id="poyaDetails" placeholder="දානයේ හෝ පින්කමේ විස්තර"></textarea>
-
-        <label>සටහන</label>
-        <textarea id="poyaNote" placeholder="අමතර සටහන්"></textarea>
-
-        <button type="button" id="poyaSave">සුරකින්න</button>
-
-        <hr>
-        <h3>සුරැකි තොරතුරු සොයන්න</h3>
-        <label>ඉඩම් අංකය</label>
-        <input id="poyaSearch" placeholder="ඉඩම් අංකය">
-        <button type="button" id="poyaSearchBtn">සොයන්න</button>
-        <div id="poyaResults"></div>
-
-        <button type="button" id="poyaBack">ආපසු ප්‍රධාන පිටුවට</button>
-      </section>
-    `);
-
-    const page = document.getElementById('poyaPage');
-    let editingId = null;
-    let donor = null;
-
-    function findDonor(land) {
-      const donors = JSON.parse(localStorage.getItem('sugathaDonors') || '[]');
-      function findDonor(land) {
-  const donors = JSON.parse(localStorage.getItem('sugathaDonors') || '[]');
-  return donors.find(d =>
-    String(d.land || '').trim().toLowerCase() ===
-    String(land || '').trim().toLowerCase()
-  );
-}
-    }
-
-    function showDonor(d) {
-      donor = d;
-      const info = document.getElementById('poyaDonorInfo');
-      if (!d) {
-        info.textContent = 'දායක තොරතුරු හමු නොවීය';
-        return;
-      }
-      info.innerHTML = '';
-      const name = document.createElement('p');
-      name.textContent = 'දායකයා: ' + (d.name || '');
-      info.appendChild(name);
-      (Array.isArray(d.phones) ? d.phones : []).filter(Boolean).forEach(phone => {
-  const link = document.createElement('a');
-  link.href = 'tel:' + phone;
-  link.textContent = '📞 ඇමතුම: ' + phone;
-  link.style.display = 'block';
-  info.appendChild(link);
-});
-        if (d[key]) {
-          const link = document.createElement('a');
-          link.href = 'tel:' + d[key];
-          link.textContent = '📞 ' + d[key];
-          link.style.display = 'block';
-          info.appendChild(link);
-        }
-      });
-    }
-
-    document.getElementById('poyaFind').onclick = function () {
-      const land = document.getElementById('poyaLand').value.trim();
-      showDonor(findDonor(land));
-    };
-
-    document.getElementById('poyaSave').onclick = function () {
-      const date = document.getElementById('poyaDate').value;
-      const type = document.getElementById('poyaType').value;
-      const land = document.getElementById('poyaLand').value.trim();
-
-      if (!date || !land) {
-        alert('දිනය සහ ඉඩම් අංකය ඇතුළත් කරන්න.');
-        return;
-      }
-
-      const foundDonor = findDonor(land);
-      if (!foundDonor) {
-        alert('පළමුව නිවැරදි දායක ඉඩම් අංකය සොයන්න.');
-        return;
-      }
-
-      const record = {
-        id: editingId || Date.now(),
-        date,
-        type,
-        landNo: land,
-        donorName: foundDonor.donorName || '',
-        details: document.getElementById('poyaDetails').value,
-        note: document.getElementById('poyaNote').value
-      };
-
-      if (editingId) {
-        records = records.map(r => r.id === editingId ? record : r);
-      } else {
-        records.push(record);
-      }
-
-      localStorage.setItem('sugathaPoya', JSON.stringify(records));
-      alert('තොරතුරු සුරැකුණා.');
-      editingId = null;
-      document.getElementById('poyaDetails').value = '';
-      document.getElementById('poyaNote').value = '';
-      document.getElementById('poyaLand').value = '';
-      document.getElementById('poyaDonorInfo').textContent = '';
-      donor = null;
-    };
-
-    document.getElementById('poyaSearchBtn').onclick = function () {
-      const land = document.getElementById('poyaSearch').value.trim();
-      const results = records.filter(r => r.landNo === land);
-      const area = document.getElementById('poyaResults');
-      area.innerHTML = '';
-
-      if (!results.length) {
-        area.textContent = 'තොරතුරු හමු නොවීය';
-        return;
-      }
-
-      results.forEach(r => {
-        const item = document.createElement('div');
-        item.style.border = '1px solid #999';
-        item.style.padding = '10px';
-        item.style.margin = '8px 0';
-
-        const info = document.createElement('p');
-        info.textContent = r.date + ' | ' + r.type + ' | ' +
-          r.donorName + ' | ' + r.details;
-        item.appendChild(info);
-
-        const edit = document.createElement('button');
-        edit.textContent = 'සංස්කරණය';
-        edit.onclick = function () {
-          editingId = r.id;
-          document.getElementById('poyaDate').value = r.date;
-          document.getElementById('poyaType').value = r.type;
-          document.getElementById('poyaLand').value = r.landNo;
-          document.getElementById('poyaDetails').value = r.details;
-          document.getElementById('poyaNote').value = r.note;
-          showDonor(findDonor(r.landNo));
-          page.scrollIntoView();
-        };
-        item.appendChild(edit);
-
-        const del = document.createElement('button');
-        del.textContent = 'මකන්න';
-        del.onclick = function () {
-          if (confirm('මෙම සටහන මකා දමන්නද?')) {
-            records = records.filter(x => x.id !== r.id);
-            localStorage.setItem('sugathaPoya', JSON.stringify(records));
-            document.getElementById('poyaSearchBtn').click();
-          }
-        };
-        item.appendChild(del);
-        area.appendChild(item);
-      });
-    };
-
-    document.getElementById('poyaBack').onclick = function () {
-      page.remove();
-      grid.style.display = '';
-    };
-  });
-})();
-</script>
-
-<style>
-#poyaPage {
-  background: #fffdf4;
-  border: 2px solid #b79538;
-  border-radius: 14px;
-  padding: 16px;
-  margin: 15px auto;
-  max-width: 650px;
-  color: #24452d;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.12);
-}
-#poyaPage h2,
-#poyaPage h3 {
-  color: #956d16;
-  text-align: center;
-}
-#poyaPage label {
-  display: block;
-  margin-top: 13px;
-  font-weight: bold;
-}
-#poyaPage input,
-#poyaPage select,
-#poyaPage textarea {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 11px;
-  margin-top: 5px;
-  border: 1px solid #b9a66d;
-  border-radius: 7px;
-  font-size: 16px;
-  background: white;
-}
-#poyaPage textarea {
-  min-height: 75px;
-}
-#poyaPage button {
-  background: #245b36;
-  color: white;
-  border: 1px solid #c6a34a;
-  border-radius: 8px;
-  padding: 11px 15px;
-  margin: 9px 4px 5px 0;
-  font-size: 15px;
-}
-#poyaPage button:active {
-  background: #173d25;
-}
-#poyaDonorInfo {
-  padding: 10px;
-  margin-top: 10px;
-  background: #edf5e9;
-  border-radius: 8px;
-}
-#poyaResults > div {
-  background: #fff;
-  border-radius: 8px;
-}
-</style>
-<script>
-(function () {
-  const poyaTypes = [
-    'පොහොය උදෑසන දානය',
-    'පොහොය දහවල් දානය',
-    'ගිලන්පස උදෑසන',
-    'ගිලන්පස සවස',
-    'ධර්ම දේශනා උදෑසන',
-    'ධර්ම දේශනා සවස'
-  ];
-
-  console.log('පොහොය දින පින්කම් වර්ග 6 සූදානම්:', poyaTypes);
-})();
-</script>
-</body>
-</html>
-<script>
-(function () {
-  function normalize(value) {
-    return String(value || '').trim().toLowerCase();
-  }
-
-  function findPoyaDonor(land) {
-    const donors = JSON.parse(
-      localStorage.getItem('sugathaDonors') || '[]'
-    );
-
-    return donors.find(function (d) {
-      return normalize(d.land) === normalize(land);
-    });
-  }
-
-
-
-<script>
-(function () {
-  function normalize(value) {
-    return String(value || '').trim().toLowerCase();
-  }
-
-  
-function findPoyaDonor(land) {
-  const donors = JSON.parse(
-    localStorage.getItem('sugathaDonors') || '[]'
-  );
-
-  const donor = donors.find(function (d) {
-    return normalize(d.land) === normalize(land);
-  });
-
-  if (!donor) return null;
-
-  const phones = donor.phones || [];
-
-  return {
-    landNo: donor.land,
-    donorName: donor.name,
-    phone1: Array.isArray(phones) ? phones[0] : phones.phone1,
-    phone2: Array.isArray(phones) ? phones[1] : phones.phone2,
-    phone3: Array.isArray(phones) ? phones[2] : phones.phone3
-  };
-}
-
-    const donors = JSON.parse(
-      localStorage.getItem('sugathaDonors') || '[]'
-    );
-
-    return donors.find(function (d) {
-     return normalize(d.land) === normalize(land);
-    });
-  }
-
-
-
-</body>
-</html>
-
-
-
-
-
-
-
