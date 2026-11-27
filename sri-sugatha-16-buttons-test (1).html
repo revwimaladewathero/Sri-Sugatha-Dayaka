@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="si">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#123d2b">
+<title>ශ්‍රී සුගත දායක තොරතුරු පද්ධතිය</title>
+<style>
+:root{--green:#123d2b;--green2:#1d6043;--gold:#d6b45c;--paper:#f5f7f3;--ink:#203128;--muted:#66756c;--line:#dce5dd}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,"Noto Sans Sinhala",sans-serif}
+header{background:linear-gradient(120deg,var(--green),var(--green2));color:white;padding:22px 16px;text-align:center;border-bottom:4px solid var(--gold)}
+header h1{font-size:22px;margin:0 0 7px}header p{margin:0;font-size:13px;opacity:.9}
+main{max-width:1050px;margin:auto;padding:16px}
+.notice{background:#fff8e5;border:1px solid #ead9a7;padding:12px;border-radius:12px;font-size:13px;line-height:1.7;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tile{background:white;border:1px solid var(--line);border-radius:14px;padding:15px 10px;text-align:left;min-height:88px;box-shadow:0 2px 7px #173d2a0a;cursor:pointer;color:var(--ink);font:inherit}
+.tile:active{transform:scale(.99)}.tile b{display:block;font-size:15px;margin-top:6px}.tile small{color:var(--muted)}
+.tile .num{display:inline-grid;place-items:center;background:#edf4ee;color:var(--green);width:28px;height:28px;border-radius:9px;font-weight:700}
+.panel{display:none;background:white;border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:14px}
+.panel.active{display:block}.panel h2{font-size:19px;margin:0 0 6px;color:var(--green)}
+.sub{color:var(--muted);font-size:13px;margin:0 0 16px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+button,.btn{border:0;border-radius:10px;padding:10px 13px;background:var(--green);color:white;font:inherit;cursor:pointer}
+button.secondary{background:#edf3ee;color:var(--green);border:1px solid var(--line)}
+button.gold{background:#8a6b1e;color:white}
+form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}
+label{font-size:13px;font-weight:650}input,select,textarea{width:100%;padding:11px;border:1px solid #cbd8ce;border-radius:9px;font:inherit;background:#fff;color:var(--ink)}
+textarea{min-height:78px;resize:vertical}
+.phonebox{border:1px solid var(--line);border-radius:12px;padding:10px;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
+.phonebox input{min-width:0}.phoneactions{display:flex;gap:6px;align-items:center}.wa{background:#e7f7ed;color:#137b42;border:1px solid #bfe6cc;padding:8px 10px}
+.records{margin-top:18px}.record{border:1px solid var(--line);border-radius:11px;padding:11px;margin:8px 0;background:#fbfdfb}
+.record strong{color:var(--green)}.record .meta{font-size:12px;color:var(--muted);margin-top:4px}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:22px}
+@media(min-width:650px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.tile{min-height:104px}}
+@media(max-width:520px){form{grid-template-columns:1fr}.field.full{grid-column:auto}.phonebox{grid-template-columns:1fr}.phoneactions{justify-content:flex-end}}
+</style>
+</head>
+<body>
+<header>
+<h1>ශ්‍රී සුගත දායක තොරතුරු පද්ධතිය</h1>
+<p>ශ්‍රී සුගත විවේක සේනාසනය</p>
+<p>කු.ග 05, දකුණු ඉවුර, මුවන් වැව, ලුණුගම්වෙහෙර.</p>
+</header>
+<main>
+<div class="notice"><b>පරීක්ෂණ පිටපත</b><br>මෙම ගොනුවේ බොත්තම් 16ම විවෘත කර පරීක්ෂා කළ හැකියි. මෙම පරීක්ෂණ පිටපතේ දත්ත මෙම උපකරණයේ බ්‍රවුසරයේ පමණක් සුරැකේ. Firebase/Cloud සමමුහුර්තකරණය මෙයට සම්බන්ධ කර නැත. WhatsApp අයිකනය පෙන්වීමට අංකය පරීක්ෂා කර ඔබ විසින් සලකුණු කළ යුතුය; WhatsApp ලියාපදිංචිය වෙබ් පිටුවකට ස්වයංක්‍රීයව තහවුරු කළ නොහැක.</div>
+<section id="home">
+<div class="grid" id="tiles"></div>
+</section>
+<section class="panel" id="panel">
+<div class="actions">
+<button class="secondary" onclick="goHome()">← ආපසු</button>
+<button class="secondary" onclick="goHome()">⌂ මුල් පිටුව</button>
+</div>
+<h2 id="panelTitle"></h2><p class="sub" id="panelSub"></p>
+<form id="entryForm"></form>
+<div class="actions" style="margin-top:14px">
+<button type="button" onclick="saveRecord()">සුරකින්න</button>
+<button type="button" class="secondary" onclick="resetForm()">හිස් කරන්න</button>
+</div>
+<div class="records"><h3 style="font-size:16px;color:#123d2b">ඇතුළත් කළ වාර්තා</h3><div id="recordList"></div></div>
+</section>
+</main>
+<footer>ශ්‍රී සුගත විවේක සේනාසනය · පරීක්ෂණ පිටපත</footer>
+<script>
+const modules=[
+["දායක තොරතුරු","දායකයාගේ මූලික තොරතුරු"],
+["දාන ලේඛනය","උදෑසන සහ දහවල් දාන"],
+["පොහොය දින දාන ලේඛනය","පොහොය දාන, ගිලන්පස සහ ධර්ම දේශනා"],
+["මුදල් හා භාණ්ඩ පරිත්‍යාග","මුදල්, භාණ්ඩ සහ රිසිට්පත්"],
+["ඡායාරූප හා වීඩියෝ","ඡායාරූප සහ වීඩියෝ සටහන්"],
+["පෞද්ගලික ගොනුව","සීමා කළ පෞද්ගලික ලේඛන"],
+["භාණ්ඩ ලේඛනය","විහාරස්ථානයේ භාණ්ඩ"],
+["වියදම් ලේඛනය","වියදම් සහ ගෙවීම්"],
+["විහාරස්ථාන සංවර්ධන කටයුතු","සංවර්ධන ව්‍යාපෘති"],
+["විහාරස්ථාන දින දර්ශනය","වැඩසටහන් සහ දිනයන්"],
+["නිවේදන හා දැනුම්දීම්","නිවේදන"],
+["ලේඛන හා වාර්තා ගබඩාව","ලේඛන ගබඩා කිරීම"],
+["වාර්තා හා සාරාංශ","වාර්තා සටහන්"],
+["සාමණේර අවශ්‍යතා","සාමණේර හිමිවරුන්ගේ අවශ්‍යතා"],
+["භාණ්ඩ පරීක්ෂණ","භාණ්ඩ පරීක්ෂණ සටහන්"],
+["බුද්ධ පූජා භාණ්ඩ","බුද්ධ පූජා භාණ්ඩ ලේඛනය"]
+];
+const fields={
+0:[["ඉඩම් අංකය","land"],["නම","name"],["ලිපිනය","address"],["ප්‍රදේශය","area"],["සටහන","note","textarea"]],
+1:[["ඉඩම් අංකය","land"],["දායකයාගේ නම","name"],["ලිපිනය","address"],["ප්‍රදේශය","area"],["දිනය","date","date"],["වේලාව","meal","select",["උදෑසන දානය","දහවල් දානය"]],["සටහන","note","textarea"]],
+2:[["දාන වර්ගය","type","select",["පොහොය දින උදෑසන දානය","පොහොය දින දහවල් දානය","ගිලන්පස උදෑසන","ගිලන්පස සවස","ධර්ම දේශනා උදෑසන","ධර්ම දේශනා සවස"]],["ඉඩම් අංකය","land"],["නම","name"],["ප්‍රදේශය","area"],["දිනය","date","date"],["සටහන","note","textarea"]],
+3:[["රිසිට්පත් අංකය","receipt"],["දායකයාගේ නම","name"],["දුරකථන අංකය","phone","tel"],["පරිත්‍යාග වර්ගය","type","select",["මුදල්","භාණ්ඩ"]],["මුදල / වටිනාකම","amount","number"],["දිනය","date","date"],["විස්තරය","note","textarea"]],
+4:[["ගොනු නාමය","name"],["දිනය","date","date"],["විස්තරය","note","textarea"]],
+5:[["ලේඛන නාමය","name"],["දිනය","date","date"],["ප්‍රවේශ සටහන","note","textarea"]],
+6:[["භාණ්ඩ කේතය","code"],["භාණ්ඩ නාමය","name"],["කාණ්ඩය","category","select",["ශබ්ද උපකරණ","ආගමික/පූජා","පිඟන්/කෝප්ප","මුළුතැන්ගෙය","ගෘහ භාණ්ඩ","විදුලි උපකරණ","ඇඳුම්","පිරිසිදු කිරීම","කාර්යාල","ජල/සනීපාරක්ෂක","උද්‍යාන/නඩත්තු","ආරක්ෂක"]],["ප්‍රමාණය","quantity","number"],["දිනය","date","date"],["තත්ත්වය","condition","select",["හොඳ","අලුත්වැඩියා කළ යුතු","භාවිතයට නුසුදුසු"]],["ස්ථානය","location"],["සටහන","note","textarea"]],
+7:[["වියදම් අංකය","code"],["වියදම් විස්තරය","name"],["මුදල","amount","number"],["දිනය","date","date"],["ගෙවූ අය","person"],["සටහන","note","textarea"]],
+8:[["ව්‍යාපෘතියේ නම","name"],["ආරම්භක දිනය","date","date"],["අයවැය","amount","number"],["තත්ත්වය","status","select",["සැලසුම්","ක්‍රියාත්මක","අවසන්"]],["විස්තරය","note","textarea"]],
+9:[["වැඩසටහන","name"],["දිනය","date","date"],["වේලාව","time","time"],["ස්ථානය","location"],["විස්තරය","note","textarea"]],
+10:[["නිවේදන මාතෘකාව","name"],["දිනය","date","date"],["නිවේදනය","note","textarea"]],
+11:[["ලේඛන නාමය","name"],["ලේඛන වර්ගය","type"],["දිනය","date","date"],["සටහන","note","textarea"]],
+12:[["වාර්තා මාතෘකාව","name"],["කාලසීමාව","period"],["විස්තරය","note","textarea"]],
+13:[["අවශ්‍යතාව","name"],["ප්‍රමාණය","quantity","number"],["දිනය","date","date"],["සටහන","note","textarea"]],
+14:[["භාණ්ඩ නාමය","name"],["පරීක්ෂා කළ දිනය","date","date"],["තත්ත්වය","condition","select",["හොඳ","අලුත්වැඩියා කළ යුතු","අඩුපාඩු ඇත"]],["සටහන","note","textarea"]],
+15:[["භාණ්ඩ නාමය","name"],["ප්‍රමාණය","quantity","number"],["පරීක්ෂා කළ දිනය","date","date"],["තත්ත්වය","condition","select",["හොඳ","අඩුයි","අලුත්වැඩියා කළ යුතු"]],["සටහන","note","textarea"]]
+};
+let current=-1;
+const tiles=document.getElementById('tiles');
+modules.forEach((m,i)=>{const b=document.createElement('button');b.className='tile';b.innerHTML=`<span class="num">${i+1}</span><b>${m[0]}</b><small>${m[1]}</small>`;b.onclick=()=>openModule(i);tiles.appendChild(b)});
+function openModule(i){current=i;document.getElementById('home').style.display='none';document.getElementById('panel').classList.add('active');document.getElementById('panelTitle').textContent=(i+1)+'. '+modules[i][0];document.getElementById('panelSub').textContent=modules[i][1];renderForm();renderRecords()}
+function goHome(){document.getElementById('panel').classList.remove('active');document.getElementById('home').style.display='block';current=-1}
+function addField(form,label,key,type='text',opts=[]){const wrap=document.createElement('div');wrap.className='field';const l=document.createElement('label');l.textContent=label;wrap.appendChild(l);let el;if(type==='textarea'){el=document.createElement('textarea')}else if(type==='select'){el=document.createElement('select');opts.forEach(v=>{let o=document.createElement('option');o.textContent=v;o.value=v;el.appendChild(o)})}else{el=document.createElement('input');el.type=type}el.name=key;wrap.appendChild(el);form.appendChild(wrap)}
+function renderForm(){const f=document.getElementById('entryForm');f.innerHTML='';(fields[current]||[]).forEach(x=>addField(f,x[0],x[1],x[2]||'text',x[3]||[]));
+if(current<=2){for(let n=1;n<=3;n++){const wrap=document.createElement('div');wrap.className='field full';wrap.innerHTML=`<label>දුරකථන අංක ${n}${n===1?' (අවශ්‍ය නම්)':''}</label><div class="phonebox"><input type="tel" id="phone${n}" placeholder="දුරකථන අංකය"><div class="phoneactions"><button type="button" class="secondary" onclick="callPhone(${n})">📞 ඇමතුම</button><button type="button" class="wa" id="wa${n}" onclick="openWhatsApp(${n})" style="display:none">WhatsApp</button></div></div><label style="font-weight:400"><input type="checkbox" id="haswa${n}" style="width:auto"> මෙම අංකයට WhatsApp තිබෙන බව පරීක්ෂා කර තහවුරු කළා</label>`;f.appendChild(wrap)}}
+}
+function callPhone(n){const v=document.getElementById('phone'+n).value.trim();if(!v){alert('පළමුව දුරකථන අංකය ඇතුළත් කරන්න.');return}location.href='tel:'+v.replace(/[^\d+]/g,'')}
+function openWhatsApp(n){const v=document.getElementById('phone'+n).value.trim().replace(/[^\d]/g,'');if(!v){alert('පළමුව දුරකථන අංකය ඇතුළත් කරන්න.');return}window.open('https://wa.me/'+v,'_blank')}
+for(let n=1;n<=3;n++){document.addEventListener('change',e=>{if(e.target&&e.target.id==='haswa'+n){document.getElementById('wa'+n).style.display=e.target.checked?'inline-block':'none'}})}
+function resetForm(){document.getElementById('entryForm').reset();for(let n=1;n<=3;n++)document.getElementById('wa'+n).style.display='none'}
+function saveRecord(){const f=document.getElementById('entryForm');const data={};new FormData(f).forEach((v,k)=>data[k]=v);if(current<=2){data.phones=[];for(let n=1;n<=3;n++){const p=document.getElementById('phone'+n).value.trim();if(p)data.phones.push({number:p,whatsapp:document.getElementById('haswa'+n).checked})}}const key='sugatha_module_'+current;const list=JSON.parse(localStorage.getItem(key)||'[]');list.unshift({data,created:new Date().toLocaleString('si-LK')});localStorage.setItem(key,JSON.stringify(list));resetForm();renderRecords();alert('මෙම උපකරණයේ බ්‍රවුසරයට වාර්තාව සුරැකුණා.')}
+function renderRecords(){const box=document.getElementById('recordList');const list=JSON.parse(localStorage.getItem('sugatha_module_'+current)||'[]');box.innerHTML='';if(!list.length){box.textContent='තවම වාර්තා ඇතුළත් කර නැත.';return}list.forEach((r,i)=>{const d=document.createElement('div');d.className='record';const title=r.data.name||r.data.land||r.data.type||'වාර්තාව';let phones=(r.data.phones||[]).map(p=>`${p.number}${p.whatsapp?'  🟢 WhatsApp':''}`).join(' · ');d.innerHTML=`<strong>${escapeHtml(title)}</strong><div class="meta">${escapeHtml(r.created)}${phones?' · '+escapeHtml(phones):''}</div><div class="meta">${escapeHtml(Object.entries(r.data).filter(([k])=>k!=='phones').map(([k,v])=>v).filter(Boolean).join(' · '))}</div><button class="secondary" style="margin-top:8px" onclick="deleteRecord(${i})">මකන්න</button>`;box.appendChild(d)})}
+function deleteRecord(i){if(!confirm('මෙම වාර්තාව මකන්නද?'))return;const key='sugatha_module_'+current;const list=JSON.parse(localStorage.getItem(key)||'[]');list.splice(i,1);localStorage.setItem(key,JSON.stringify(list));renderRecords()}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+</script>
+</body></html>
