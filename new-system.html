@@ -1,4 +1,4 @@
-
+ 
 <!DOCTYPE html>
 <html lang="si">
 <head>
@@ -698,7 +698,50 @@ danaButton.addEventListener("click", function() {
   if (!original) return;
 
   const btn = original.cloneNode(true);
-  original.parentNode.replaceChild(btn, original);
+  function findDonor(land) {
+  const donors = JSON.parse(localStorage.getItem('sugathaDonors') || '[]');
+
+  return donors.find(d =>
+    String(d.land || '').trim().toLowerCase() ===
+    String(land || '').trim().toLowerCase()
+  );
+}
+
+function showDonor(d) {
+  donor = d;
+
+  const info = document.getElementById('poyaDonorInfo');
+  info.innerHTML = '';
+
+  if (!d) {
+    info.textContent = 'දායක තොරතුරු හමු නොවීය';
+    return;
+  }
+
+  const name = document.createElement('p');
+  name.textContent = 'දායකයා: ' + (d.name || '');
+  info.appendChild(name);
+
+  (Array.isArray(d.phones) ? d.phones : []).filter(Boolean).forEach(phone => {
+    const call = document.createElement('a');
+    call.href = 'tel:' + phone;
+    call.textContent = '📞 ඇමතුම: ' + phone;
+    call.style.display = 'block';
+    info.appendChild(call);
+
+    const number = String(phone).replace(/\D/g, '');
+    const waNumber = number.startsWith('0')
+      ? '94' + number.slice(1)
+      : number;
+
+    const wa = document.createElement('a');
+    wa.href = 'https://wa.me/' + waNumber;
+    wa.target = '_blank';
+    wa.textContent = 'WhatsApp පණිවිඩයක් යවන්න';
+    wa.style.display = 'block';
+    info.appendChild(wa);
+  });
+}
 
   btn.addEventListener('click', function () {
     const container = document.querySelector('.main-container');
