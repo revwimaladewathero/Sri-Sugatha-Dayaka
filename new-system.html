@@ -1040,7 +1040,29 @@ danaButton.addEventListener("click", function() {
     return String(value || '').trim().toLowerCase();
   }
 
-  function findPoyaDonor(land) {
+  
+function findPoyaDonor(land) {
+  const donors = JSON.parse(
+    localStorage.getItem('sugathaDonors') || '[]'
+  );
+
+  const donor = donors.find(function (d) {
+    return normalize(d.land) === normalize(land);
+  });
+
+  if (!donor) return null;
+
+  const phones = donor.phones || [];
+
+  return {
+    landNo: donor.land,
+    donorName: donor.name,
+    phone1: Array.isArray(phones) ? phones[0] : phones.phone1,
+    phone2: Array.isArray(phones) ? phones[1] : phones.phone2,
+    phone3: Array.isArray(phones) ? phones[2] : phones.phone3
+  };
+}
+
     const donors = JSON.parse(
       localStorage.getItem('sugathaDonors') || '[]'
     );
