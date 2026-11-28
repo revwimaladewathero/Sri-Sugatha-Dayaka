@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="si">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ශ්‍රී සුගත දායක තොරතුරු පද්ධතිය</title>
+<style>
+:root{--green:#176b4a;--deep:#104b36;--pale:#eef7f1;--line:#d8e4dc;--ink:#1e2a23;--muted:#64736a;--red:#a33b32}
+*{box-sizing:border-box}body{margin:0;background:#f4f6f2;color:var(--ink);font-family:system-ui,"Noto Sans Sinhala",sans-serif}
+header{background:linear-gradient(135deg,var(--deep),var(--green));color:white;padding:20px 16px}
+.wrap{max-width:1100px;margin:auto;padding:16px}
+h1{font-size:1.35rem;margin:0 0 6px}h2{font-size:1.15rem;margin:0 0 12px}
+.small{font-size:.88rem;color:var(--muted)}header .small{color:#e1eee6}
+.panel,.module-card{background:white;border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:12px}
+.module{background:white;border:1px solid var(--line);border-radius:13px;padding:15px;text-align:left;min-height:88px;color:var(--ink);font:inherit;cursor:pointer}
+.module:hover{border-color:var(--green);background:var(--pale)}
+.module b{display:block;color:var(--green);font-size:.9rem;margin-bottom:5px}
+button,.btn{border:0;border-radius:9px;background:var(--green);color:white;padding:10px 14px;font:inherit;cursor:pointer}
+button.secondary{background:#e7eee9;color:var(--deep);border:1px solid var(--line)}
+button.danger{background:var(--red)}
+button:disabled{opacity:.5;cursor:not-allowed}
+input,select,textarea{width:100%;padding:10px;border:1px solid #cbd8cf;border-radius:8px;font:inherit;background:white}
+label{display:block;font-size:.9rem;font-weight:600;margin:10px 0 5px}
+.formgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px 12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.hidden{display:none!important}.topline{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.record{padding:12px;border:1px solid var(--line);border-radius:10px;margin:8px 0;background:#fff}
+.record strong{color:var(--deep)}.record-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.notice{padding:11px;border-radius:9px;background:#fff7df;border:1px solid #f0dfaa;color:#5f4c17}
+.success{background:#e8f5ec;border-color:#b9dfc4;color:#205c35}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+footer{text-align:center;color:var(--muted);font-size:.8rem;padding:22px}
+@media(max-width:600px){.wrap{padding:10px}header{padding:16px 12px}.module{min-height:76px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="wrap">
+  <h1 id="templeHeading">ශ්‍රී සුගත දායක තොරතුරු පද්ධතිය</h1>
+  <div class="small" id="accountLine">විහාරස්ථාන කළමනාකරණ පද්ධතිය</div>
+ </div>
+</header>
+<main class="wrap">
+<section id="authPanel" class="panel">
+ <h2>ගිණුමට පිවිසීම</h2>
+ <p class="small">ඔබගේ ඊමේල් ලිපිනය සහ මුරපදය භාවිත කරන්න. නව ගිණුමක් සෑදීම හෝ මුරපදය නැවත සකස් කිරීමද මෙතැනින් කළ හැකියි.</p>
+ <div class="formgrid">
+  <div><label for="email">ඊමේල් ලිපිනය</label><input id="email" type="email" autocomplete="username" placeholder="name@example.com"></div>
+  <div><label for="password">මුරපදය</label><input id="password" type="password" autocomplete="current-password" placeholder="මුරපදය"></div>
+ </div>
+ <div class="row" style="margin-top:14px">
+  <button id="loginBtn">පිවිසෙන්න</button><button class="secondary" id="registerBtn">නව ගිණුමක් සාදන්න</button><button class="secondary" id="resetBtn">මුරපදය අමතකද?</button>
+ </div>
+ <p id="authMsg" class="small" aria-live="polite"></p>
+ <div class="notice">Firebase සම්බන්ධතාවය ක්‍රියාත්මක වීමට ඔබගේ ව්‍යාපෘතියේ <b>firebase-config.js</b> ගොනුව නිවැරදිව තිබිය යුතුය. එය නොමැති නම් මෙම පිවිසුම ක්‍රියා නොකරයි.</div>
+</section>
+
+<section id="profilePanel" class="panel hidden">
+ <div class="topline"><h2>විහාරස්ථානයේ තොරතුරු</h2><span class="small">පළමු පිවිසීමේදී පුරවන්න</span></div>
+ <div class="formgrid">
+  <div><label>විහාරස්ථානයේ නම *</label><input id="templeName" placeholder="විහාරස්ථානයේ නම"></div>
+  <div><label>ලිපිනය</label><input id="templeAddress" placeholder="ලිපිනය"></div>
+  <div><label>දුරකථන අංකය</label><input id="templePhone" placeholder="දුරකථන අංකය"></div>
+  <div><label>විද්‍යුත් තැපෑල</label><input id="templeEmail" type="email" placeholder="විද්‍යුත් තැපෑල"></div>
+ </div>
+ <div class="row" style="margin-top:12px"><button id="saveProfile">තොරතුරු සුරකින්න</button><button class="secondary" id="skipProfile">පසුව පුරවන්න</button></div>
+</section>
+
+<section id="appPanel" class="hidden">
+ <div class="panel topline">
+  <div><h2 id="welcomeTitle">ප්‍රධාන මෙනුව</h2><div class="small" id="userLine"></div></div>
+  <div class="row"><button class="secondary" id="editProfile">විහාරස්ථාන තොරතුරු</button><button class="secondary" id="updatesBtn">යාවත්කාලීන කිරීම්</button><button class="danger" id="logoutBtn">ඉවත් වන්න</button></div>
+ </div>
+ <div class="grid" id="moduleGrid"></div>
+ <section id="modulePanel" class="panel hidden">
+  <div class="topline"><div><h2 id="moduleTitle"></h2><div class="small" id="moduleDesc"></div></div><button class="secondary" id="backBtn">ප්‍රධාන මෙනුවට</button></div>
+  <div id="moduleTools" class="tabs"></div>
+  <form id="dataForm">
+   <div class="formgrid" id="fields"></div>
+   <label>අමතර සටහන</label><textarea id="extraNote" rows="2" placeholder="අමතර විස්තර"></textarea>
+   <div class="row" style="margin-top:12px"><button type="submit" id="saveRecord">සුරකින්න</button><button type="button" class="secondary" id="clearForm">හිස් කරන්න</button></div>
+  </form>
+  <div class="row" style="margin:16px 0 8px"><input id="searchRecords" placeholder="මෙම කොටසේ වාර්තා සොයන්න..." style="flex:1;min-width:180px"><button class="secondary" id="exportCsv">CSV වාර්තාව</button><button class="secondary" id="printRecords">මුද්‍රණය</button></div>
+  <div id="records"></div>
+ </section>
+ <section id="updatesPanel" class="panel hidden"><div class="topline"><h2>යාවත්කාලීන කිරීම් හා නිවේදන</h2><button class="secondary" id="closeUpdates">වසන්න</button></div><p>පද්ධතියේ නව විශේෂාංග, නිවැරදි කිරීම් සහ භාවිත උපදෙස් මෙහි පෙන්වනු ඇත.</p><div class="record"><strong>පළමු නිකුතුව</strong><p class="small">ප්‍රධාන මෙනුවේ කොටස් 20 සඳහා මූලික දත්ත ඇතුළත් කිරීමේ රාමුව සකස් කර ඇත. සම්පූර්ණ විශේෂාංග පරීක්ෂා කරමින් අදියරෙන් අදියර සම්පූර්ණ කළ යුතුය.</p></div></section>
+</section>
+</main>
+<footer>ශ්‍රී සුගත දායක තොරතුරු පද්ධතිය · දත්ත ආරක්ෂාව සඳහා Firebase Authentication සහ Firestore නීති නිවැරදිව සැකසිය යුතුය.</footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="./firebase-config.js"></script>
+<script>
+const modules = [
+ {name:"දායක තොරතුරු",desc:"දායකයන්ගේ මූලික තොරතුරු ඇතුළත් කිරීම, සෙවීම හා වාර්තා.",fields:["ඉඩම් අංකය","නම","ලිපිනය","ප්‍රදේශය","පටුමඟ","දුරකථන අංකය 1","දුරකථන අංකය 2","දුරකථන අංකය 3"]},
+ {name:"දාන ලේඛනය",desc:"දායකයාගේ ඉඩම් අංකය අනුව දාන දින හා විස්තර.",fields:["ඉඩම් අංකය","දායකයාගේ නම","දිනය","වේලාව / වාරය","දානයේ විස්තර","දුරකථන අංකය"]},
+ {name:"පොහොය දින දායකත්ව",desc:"පොහොය දින දාන, ගිලන්පස හා ධර්ම දේශනා දායකත්ව.",fields:["දායකත්ව වර්ගය","ඉඩම් අංකය","දායකයාගේ නම","දිනය","උදේ / සවස","විස්තර"]},
+ {name:"මුදල් හා භාණ්ඩ පරිත්‍යාග",desc:"මුදල් සහ භාණ්ඩ පරිත්‍යාග සටහන්.",fields:["රිසිට්පත් අංකය","දිනය","ඉඩම් අංකය","දායකයාගේ නම","පරිත්‍යාග වර්ගය","මුදල (රු.)","භාණ්ඩය","ප්‍රමාණය","ගෙවීම් ක්‍රමය"]},
+ {name:"ඡායාරූප හා වීඩියෝ",desc:"මාධ්‍ය ගබඩා සටහන්. ගොනු ගබඩා කිරීම සඳහා Firebase Storage වෙනම සකස් කළ යුතුය.",fields:["ගොනුවේ නම","දිනය","සිදුවීම","විස්තර","ගබඩා සබැඳිය"]},
+ {name:"ලේඛන ගබඩාව",desc:"ලේඛනවල නම, වර්ගය හා ගබඩා සබැඳිය.",fields:["ලේඛනයේ නම","ලේඛන වර්ගය","දිනය","විස්තර","ගොනු සබැඳිය"]},
+ {name:"භාණ්ඩ තොග ලේඛනය",desc:"විහාරස්ථානයේ භාණ්ඩ තොග සටහන්.",fields:["භාණ්ඩ කාණ්ඩය","භාණ්ඩයේ නම","ප්‍රමාණය","තත්ත්වය","ලැබුණු දිනය","සටහන"]},
+ {name:"වියදම් ලේඛනය",desc:"විවිධ වියදම් සහ මාසික/වාර්ෂික වාර්තා.",fields:["දිනය","වියදම් කාණ්ඩය","විස්තරය","මුදල (රු.)","ගෙවූ පුද්ගලයා","රිසිට්පත් සබැඳිය"]},
+ {name:"විහාරස්ථාන සංවර්ධන කටයුතු",desc:"ව්‍යාපෘති, වියදම්, දායකත්ව හා ප්‍රගතිය.",fields:["ව්‍යාපෘතියේ නම","ආරම්භක දිනය","අවසන් දිනය","වගකිවයුතු පුද්ගලයා","වියදම (රු.)","ප්‍රගතිය","විස්තර"]},
+ {name:"විහාරස්ථාන දින දර්ශනය",desc:"පොහොය, පින්කම්, දාන හා රැස්වීම්.",fields:["වැඩසටහනේ නම","දිනය","වේලාව","ස්ථානය","විස්තර","මතක් කිරීම"]},
+ {name:"නිවේදන හා දැනුම්දීම්",desc:"විහාරස්ථානයේ නිවේදන පළ කිරීම.",fields:["මාතෘකාව","දිනය","වේලාව","අදාළ වැඩසටහන","නිවේදනය","ප්‍රකාශන තත්ත්වය"]},
+ {name:"ලේඛන හා වාර්තා ගබඩාව",desc:"PDF, Word, Excel සහ අනෙකුත් ලේඛන පිළිබඳ සටහන්.",fields:["ලේඛනයේ නම","වර්ගය","දිනය","ගොනු සබැඳිය","විස්තර"]},
+ {name:"වාර්තා හා සාරාංශ",desc:"දායක, දාන, පරිත්‍යාග හා වියදම් සාරාංශ සටහන්.",fields:["වාර්තා වර්ගය","ආරම්භක දිනය","අවසන් දිනය","විස්තර","මුළු එකතුව (රු.)"]},
+ {name:"සාමණේර අවශ්‍යතා",desc:"අවශ්‍ය භාණ්ඩ, ලබාදුන් දේ සහ ඉතිරි අවශ්‍යතා.",fields:["අවශ්‍යතාව","කාණ්ඩය","අවශ්‍ය ප්‍රමාණය","ලබාදුන් ප්‍රමාණය","දිනය","දායකයා","විස්තර"]},
+ {name:"භාණ්ඩ පරීක්ෂාව",desc:"භාණ්ඩ පරීක්ෂා කිරීම, අලුත්වැඩියා හා ඊළඟ පරීක්ෂාව.",fields:["භාණ්ඩයේ නම","පරීක්ෂා කළ දිනය","තත්ත්වය","දෝෂ","අලුත්වැඩියා විස්තර","පරීක්ෂක","ඊළඟ පරීක්ෂණ දිනය"]},
+ {name:"බුද්ධ පූජා භාණ්ඩ",desc:"බුද්ධ පූජා භාණ්ඩ තොග හා අවශ්‍ය ප්‍රමාණ.",fields:["භාණ්ඩ කාණ්ඩය","භාණ්ඩයේ නම","තිබෙන ප්‍රමාණය","අවශ්‍ය ප්‍රමාණය","තත්ත්වය","භාවිත සටහන"]},
+ {name:"උත්සව භාණ්ඩ නිකුත් කිරීම හා ආපසු භාරගැනීම",desc:"නිකුත් කළ, ආපසු ලැබුණු සහ ඉතිරි භාණ්ඩ.",fields:["උත්සවය","නිකුත් කළ දිනය","භාරගත් පුද්ගලයා","භාණ්ඩය","නිකුත් කළ ප්‍රමාණය","ආපසු ලැබුණු ප්‍රමාණය","හානි / අස්ථානගත","රිසිට්පත් අංකය"]},
+ {name:"දායක දාන දින වාර්තාව",desc:"ඉඩම් අංකය අනුව දායක තොරතුරු හා දාන දින වාර්තා.",fields:["ඉඩම් අංකය","දායකයාගේ නම","කාල පරාසය","දාන දින","විස්තර"]},
+ {name:"දායක සම්බන්ධතා හා රිසිට්පත්",desc:"ඉඩම් අංකය අනුව සම්බන්ධ වාර්තා සහ රිසිට්පත් සටහන්.",fields:["ඉඩම් අංකය","දායකයාගේ නම","රිසිට්පත් අංකය","දිනය","මුදල (රු.)","රිසිට්පත් විස්තර"]},
+ {name:"ජල හා විදුලි බිල්පත් ගෙවීම්",desc:"ජල හා විදුලි බිල්පත් මාසික ගෙවීම් සහ එකතු.",fields:["බිල්පත් වර්ගය","මාසය","වර්ෂය","බිල්පත් අංකය","ගෙවූ මුදල (රු.)","ගෙවූ දිනය","ගෙවීම් තත්ත්වය"]}
+];
+let app,auth,db,currentUser=null,currentModule=-1,editingId=null,profile={};
+const $=id=>document.getElementById(id);
+function msg(t,ok=false){$("authMsg").textContent=t;$("authMsg").className=ok?"small success":"small";}
+function firebaseReady(){return !!(window.SUGATHA_FIREBASE_CONFIG && window.firebase && firebase.apps);}
+function initFirebase(){
+ if(!firebaseReady()){msg("Firebase සැකසුම හමු නොවීය. firebase-config.js ගොනුවේ SUGATHA_FIREBASE_CONFIG නිවැරදිව තිබේද පරීක්ෂා කරන්න.");return false;}
+ try{app=firebase.apps.length?firebase.app():firebase.initializeApp(window.SUGATHA_FIREBASE_CONFIG);auth=firebase.auth();db=firebase.firestore();auth.onAuthStateChanged(async u=>{currentUser=u;if(u)await afterLogin();else showAuth();});return true}catch(e){msg("Firebase ආරම්භ කිරීමේ දෝෂය: "+e.message);return false;}
+}
+function showAuth(){$("authPanel").classList.remove("hidden");$("profilePanel").classList.add("hidden");$("appPanel").classList.add("hidden");}
+async function afterLogin(){
+ $("authPanel").classList.add("hidden");$("userLine").textContent=currentUser.email||"";
+ try{let snap=await db.collection("users").doc(currentUser.uid).collection("settings").doc("temple").get();profile=snap.exists?snap.data():{};}catch(e){alert("විහාරස්ථාන තොරතුරු කියවීමට නොහැකි විය. Firestore Security Rules පරීක්ෂා කරන්න.");profile={};}
+ if(!profile.name){$("profilePanel").classList.remove("hidden");$("appPanel").classList.add("hidden");}
+ else{showApp();}
+}
+function showApp(){
+ $("profilePanel").classList.add("hidden");$("appPanel").classList.remove("hidden");
+ $("templeHeading").textContent=profile.name||"ශ්‍රී සුගත දායක තොරතුරු පද්ධතිය";
+ $("accountLine").textContent=profile.address||"විහාරස්ථාන කළමනාකරණ පද්ධතිය";
+ $("welcomeTitle").textContent=profile.name||"ප්‍රධාන මෙනුව";
+ $("moduleGrid").innerHTML="";
+ modules.forEach((m,i)=>{let b=document.createElement("button");b.className="module";b.innerHTML=`<b>${String(i+1).padStart(2,"0")} වන බොත්තම</b>${m.name}`;b.onclick=()=>openModule(i);$("moduleGrid").appendChild(b);});
+}
+async function saveProfile(){
+ const p={name:$("templeName").value.trim(),address:$("templeAddress").value.trim(),phone:$("templePhone").value.trim(),email:$("templeEmail").value.trim(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+ if(!p.name){alert("විහාරස්ථානයේ නම ඇතුළත් කරන්න.");return;}
+ try{await db.collection("users").doc(currentUser.uid).collection("settings").doc("temple").set(p,{merge:true});profile=p;showApp();}catch(e){alert("සුරැකීමට නොහැකි විය: "+e.message);}
+}
+function openModule(i){
+ currentModule=i;editingId=null;$("moduleTitle").textContent=(i+1)+". "+modules[i].name;$("moduleDesc").textContent=modules[i].desc;
+ $("moduleGrid").classList.add("hidden");$("modulePanel").classList.remove("hidden");$("updatesPanel").classList.add("hidden");
+ $("fields").innerHTML="";
+ modules[i].fields.forEach((f,n)=>{let wrap=document.createElement("div"),lab=document.createElement("label"),inp=document.createElement("input");lab.textContent=f;inp.name="f"+n;inp.placeholder=f;
+ if(f.includes("දිනය"))inp.type="date";else if(f.includes("මුදල")||f.includes("ප්‍රමාණය")||f.includes("වර්ෂය")){inp.type="number";inp.step="any";}
+ wrap.append(lab,inp);$("fields").appendChild(wrap);});
+ $("moduleTools").innerHTML=`<span class="small">මෙම කොටසට අදාළ දත්ත ඔබගේ ගිණුමට පමණක් සුරැකේ.</span>`;
+ $("dataForm").reset();$("extraNote").value="";loadRecords();
+}
+function collection(){return db.collection("users").doc(currentUser.uid).collection("module_"+(currentModule+1));}
+async function loadRecords(){
+ $("records").innerHTML="<p class='small'>වාර්තා ලබාගනිමින්...</p>";
+ try{let snap=await collection().orderBy("createdAt","desc").get();let q=$("searchRecords").value.trim().toLowerCase();$("records").innerHTML="";
+ snap.forEach(doc=>{let d=doc.data(),vals=Object.values(d.fields||{}).join(" ").toLowerCase()+" "+(d.note||"").toLowerCase();if(q&&!vals.includes(q))return;
+ let el=document.createElement("div");el.className="record";let title=Object.values(d.fields||{}).filter(Boolean).slice(0,3).join(" · ")||"විස්තර නැත";let detail=Object.entries(d.fields||{}).filter(([k,v])=>v).map(([k,v])=>`${k}: ${v}`).join(" | ");
+ el.innerHTML=`<strong></strong><div class="small"></div><div class="small"></div><div class="record-actions"><button class="secondary edit">සංස්කරණය</button><button class="danger del">මකන්න</button></div>`;
+ el.querySelector("strong").textContent=title;el.children[1].textContent=detail;el.children[2].textContent=d.note||"";
+ el.querySelector(".edit").onclick=()=>editRecord(doc.id,d);el.querySelector(".del").onclick=()=>deleteRecord(doc.id);$("records").appendChild(el);
+ });if(!$("records").children.length)$("records").innerHTML="<p class='small'>තවම වාර්තා නැත.</p>";
+ }catch(e){$("records").innerHTML="<div class='notice'>වාර්තා ලබාගැනීමට නොහැකි විය. Firestore Security Rules සහ සම්බන්ධතාවය පරීක්ෂා කරන්න. "+e.message+"</div>";}
+}
+function editRecord(id,d){editingId=id;modules[currentModule].fields.forEach((f,n)=>{let el=$("fields").querySelector(`[name="f${n}"]`);el.value=(d.fields||{})[f]||"";});$("extraNote").value=d.note||"";$("saveRecord").textContent="වෙනස්කම් සුරකින්න";window.scrollTo({top:$("modulePanel").offsetTop,behavior:"smooth"});}
+async function deleteRecord(id){if(!confirm("මෙම වාර්තාව මකා දමන්නද?"))return;try{await collection().doc(id).delete();loadRecords();}catch(e){alert("මකා දැමීමට නොහැකි විය: "+e.message);}}
+$("dataForm").addEventListener("submit",async e=>{e.preventDefault();let fields={};modules[currentModule].fields.forEach((f,n)=>fields[f]=$("fields").querySelector(`[name="f${n}"]`).value.trim());let data={fields,note:$("extraNote").value.trim(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()};try{if(editingId)await collection().doc(editingId).set(data,{merge:true});else await collection().add({...data,createdAt:firebase.firestore.FieldValue.serverTimestamp()});editingId=null;$("dataForm").reset();$("extraNote").value="";$("saveRecord").textContent="සුරකින්න";loadRecords();}catch(err){alert("දත්ත සුරැකීමට නොහැකි විය: "+err.message);}});
+$("loginBtn").onclick=async()=>{if(!auth){msg("Firebase සැකසුම සකස් කර නැත.");return;}try{await auth.signInWithEmailAndPassword($("email").value.trim(),$("password").value);}catch(e){msg("පිවිසීමට නොහැකි විය: "+e.message);}};
+$("registerBtn").onclick=async()=>{if(!auth){msg("Firebase සැකසුම සකස් කර නැත.");return;}try{await auth.createUserWithEmailAndPassword($("email").value.trim(),$("password").value);}catch(e){msg("ගිණුම සෑදීමට නොහැකි විය: "+e.message);}};
+$("resetBtn").onclick=async()=>{if(!auth){msg("Firebase සැකසුම සකස් කර නැත.");return;}let em=$("email").value.trim();if(!em){msg("පළමුව ඊමේල් ලිපිනය ඇතුළත් කරන්න.");return;}try{await auth.sendPasswordResetEmail(em);msg("මුරපදය නැවත සකස් කිරීමේ සබැඳිය ඊමේල් වෙත යවා ඇත.",true);}catch(e){msg("ඊමේල් යැවීමට නොහැකි විය: "+e.message);}};
+$("saveProfile").onclick=saveProfile;
+$("skipProfile").onclick=()=>{profile={name:"ඔබගේ විහාරස්ථානය"};showApp();};
+$("editProfile").onclick=()=>{$("templeName").value=profile.name||"";$("templeAddress").value=profile.address||"";$("templePhone").value=profile.phone||"";$("templeEmail").value=profile.email||currentUser.email||"";$("profilePanel").classList.remove("hidden");};
+$("logoutBtn").onclick=()=>auth&&auth.signOut();
+$("backBtn").onclick=()=>{$("modulePanel").classList.add("hidden");$("moduleGrid").classList.remove("hidden");};
+$("clearForm").onclick=()=>{editingId=null;$("dataForm").reset();$("extraNote").value="";$("saveRecord").textContent="සුරකින්න";};
+$("searchRecords").addEventListener("input",loadRecords);
+$("updatesBtn").onclick=()=>{$("moduleGrid").classList.add("hidden");$("modulePanel").classList.add("hidden");$("updatesPanel").classList.remove("hidden");};
+$("closeUpdates").onclick=()=>{$("updatesPanel").classList.add("hidden");$("moduleGrid").classList.remove("hidden");};
+$("exportCsv").onclick=async()=>{try{let s=await collection().get(),rows=[["ක්ෂේත්‍රය","අගය","සටහන"]];s.forEach(d=>{let x=d.data();Object.entries(x.fields||{}).forEach(([k,v])=>rows.push([k,v,x.note||""]));});let csv="\uFEFF"+rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\n");let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));a.download="sugatha-module-"+(currentModule+1)+".csv";a.click();URL.revokeObjectURL(a.href);}catch(e){alert(e.message);}};
+$("printRecords").onclick=()=>window.print();
+$("searchRecords").value="";
+initFirebase();
+</script>
+</body>
+</html>
